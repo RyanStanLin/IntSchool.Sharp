@@ -1,6 +1,6 @@
 namespace IntSchool.Sharp.LifeCycle;
 
-public class GetAccountStudents
+public class GetCurrentAccountInformation
 {
     
 }
