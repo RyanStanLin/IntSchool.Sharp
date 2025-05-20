@@ -8,11 +8,13 @@ namespace IntSchool.Sharp.LifeCycle;
 
 public partial class API
 {
-    public (bool isSuccess, ApiResult<GetCurrentAccountInformationResponseModel, ErrorResponseModel>? apiResult) GetCurrentAccountInformation()
+    public (bool isSuccess, ApiResult<GetStudentDetailResponseModel, ErrorResponseModel>? apiResult) GetStudentDetail(string studentId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
-        RestRequest request = new RestRequest(resource: Constants.GetAccountInfoPath, method: Method.Get)
-            .AddHeader(Constants.JsonXPathKey, XToken);
+        ArgumentException.ThrowIfNullOrEmpty(studentId);
+        RestRequest request = new RestRequest(resource: Constants.GetStudentDetailPath, method: Method.Get)
+            .AddHeader(Constants.JsonXPathKey, XToken)
+            .AddQueryParameter(Constants.JsonStudentIdKey, studentId);
         try
         {
             var response = Client.Execute(request);
@@ -22,7 +24,7 @@ public partial class API
                 try
                 {
                     var error = ErrorResponseModel.FromJson(response.Content);
-                    var result = ApiResult<GetCurrentAccountInformationResponseModel, ErrorResponseModel>.Error(error);
+                    var result = ApiResult<GetStudentDetailResponseModel, ErrorResponseModel>.Error(error);
                     var eventArgs =
                         new UnauthorizedErrorEventArgs(
                             timestamp:error.Timestamp.DateTime,
@@ -43,8 +45,8 @@ public partial class API
                 }
             }
             
-            var raw = GetCurrentAccountInformationResponseModel.FromJson(response.Content);
-            return (true, ApiResult<GetCurrentAccountInformationResponseModel, ErrorResponseModel>.Success(raw));
+            var raw = GetStudentDetailResponseModel.FromJson(response.Content);
+            return (true, ApiResult<GetStudentDetailResponseModel, ErrorResponseModel>.Success(raw));
         }
         catch (Exception ex) when (ex is not JsonException)
         {

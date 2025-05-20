@@ -4,7 +4,7 @@
 //
 //    using IntSchool.Sharp.Models;
 //
-//    var getCurrentAccountInformationResponseModel = GetCurrentAccountInformationResponseModel.FromJson(jsonString);
+//    var getParentsResponseModel = GetParentsResponseModel.FromJson(jsonString);
 
 namespace IntSchool.Sharp.Models
 {
@@ -15,7 +15,7 @@ namespace IntSchool.Sharp.Models
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class GetCurrentAccountInformationResponseModel
+    public partial class GetParentsResponseModel
     {
         [JsonProperty("parentId")]
         public long ParentId { get; set; }
@@ -27,7 +27,7 @@ namespace IntSchool.Sharp.Models
         public string EnName { get; set; }
 
         [JsonProperty("areaCode")]
-        [JsonConverter(typeof(GetCurrentAccountInformationResponseModelParseStringConverter))]
+        [JsonConverter(typeof(GetParentsResponseModelParseStringConverter))]
         public long AreaCode { get; set; }
 
         [JsonProperty("mobile")]
@@ -67,17 +67,17 @@ namespace IntSchool.Sharp.Models
         public string Position { get; set; }
     }
 
-    public partial class GetCurrentAccountInformationResponseModel
+    public partial class GetParentsResponseModel
     {
-        public static GetCurrentAccountInformationResponseModel FromJson(string json) => JsonConvert.DeserializeObject<GetCurrentAccountInformationResponseModel>(json, IntSchool.Sharp.Models.ConverterGetCurrentAccountInformationResponseModel.Settings);
+        public static List<GetParentsResponseModel> FromJson(string json) => JsonConvert.DeserializeObject<List<GetParentsResponseModel>>(json, IntSchool.Sharp.Models.ConverterGetParentsResponseModel.Settings);
     }
 
-    public static class SerializeGetCurrentAccountInformationResponseModel
+    public static class SerializeGetParentsResponseModel
     {
-        public static string ToJson(this GetCurrentAccountInformationResponseModel self) => JsonConvert.SerializeObject(self, IntSchool.Sharp.Models.ConverterGetCurrentAccountInformationResponseModel.Settings);
+        public static string ToJson(this List<GetParentsResponseModel> self) => JsonConvert.SerializeObject(self, IntSchool.Sharp.Models.ConverterGetParentsResponseModel.Settings);
     }
 
-    internal static class ConverterGetCurrentAccountInformationResponseModel
+    internal static class ConverterGetParentsResponseModel
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {
@@ -90,7 +90,7 @@ namespace IntSchool.Sharp.Models
         };
     }
 
-    internal class GetCurrentAccountInformationResponseModelParseStringConverter : JsonConverter
+    internal class GetParentsResponseModelParseStringConverter : JsonConverter
     {
         public override bool CanConvert(Type t) => t == typeof(long) || t == typeof(long?);
 
@@ -118,6 +118,6 @@ namespace IntSchool.Sharp.Models
             return;
         }
 
-        public static readonly GetCurrentAccountInformationResponseModelParseStringConverter Singleton = new GetCurrentAccountInformationResponseModelParseStringConverter();
+        public static readonly GetParentsResponseModelParseStringConverter Singleton = new GetParentsResponseModelParseStringConverter();
     }
 }
