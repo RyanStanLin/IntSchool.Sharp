@@ -1,4 +1,3 @@
-using IntSchool.Sharp.Models;
 using Newtonsoft.Json;
 
 namespace IntSchool.Sharp.Data.EventArguments;

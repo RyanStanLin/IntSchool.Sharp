@@ -1,5 +1,3 @@
-using IntSchool.Sharp.Models;
-
 namespace IntSchool.Sharp.Data.EventArguments;
 
 public sealed class UnauthorizedErrorEventArgs(
