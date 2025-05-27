@@ -1,8 +1,8 @@
 namespace IntSchool.Sharp.RequestConfigs;
 
-public struct GetStudentCurriculumConfiguration
+public struct SharedStudentTimespanConfiguration
 {
-    public GetStudentCurriculumConfiguration(string schoolYearId, string studentId, DateTime startTime, DateTime endTime)
+    public SharedStudentTimespanConfiguration(string schoolYearId, string studentId, DateTime startTime, DateTime endTime)
     {
         ArgumentException.ThrowIfNullOrEmpty(studentId);
         ArgumentException.ThrowIfNullOrEmpty(schoolYearId);

@@ -1,8 +1,6 @@
 using System.Net;
 using IntSchool.Sharp.Data.EventArguments;
-using IntSchool.Sharp.Extensions;
 using IntSchool.Sharp.Models;
-using IntSchool.Sharp.RequestConfigs;
 using Newtonsoft.Json;
 using RestSharp;
 
@@ -10,15 +8,11 @@ namespace IntSchool.Sharp.LifeCycle;
 
 public partial class API
 {
-    public (bool isSuccess, ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>? apiResult) GetStudentCurriculum(SharedStudentTimespanConfiguration configuration)
+    public (bool isSuccess, ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel>? apiResult) GetAttendanceOptions()
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
-        //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of SharedStudentTimespanConfiguration
-        RestRequest request = new RestRequest(resource: Constants.GetStudentCurriculumPath + configuration.SchoolYearId, method: Method.Get)
-            .AddHeader(Constants.JsonXPathKey, XToken)
-            .AddQueryParameter(Constants.JsonStudentIdKey, configuration.StudentId)
-            .AddQueryParameter(Constants.JsonStartTimeKey, configuration.StartTime.ToUnixTimestampMilliseconds())
-            .AddQueryParameter(Constants.JsonEndTimeKey, configuration.EndTime.ToUnixTimestampMilliseconds());
+        RestRequest request = new RestRequest(resource: Constants.GetAttendanceOptionsPath, method: Method.Get)
+            .AddHeader(Constants.JsonXPathKey, XToken);
         try
         {
             var response = Client.Execute(request);
@@ -28,7 +22,7 @@ public partial class API
                 try
                 {
                     var error = ErrorResponseModel.FromJson(response.Content);
-                    var result = ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>.Error(error);
+                    var result = ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel>.Error(error);
                     var eventArgs =
                         new UnauthorizedErrorEventArgs(
                             timestamp:error.Timestamp.DateTime,
@@ -49,13 +43,12 @@ public partial class API
                 }
             }
             
-            var raw = GetStudentCurriculumResponseModel.FromJson(response.Content);
-            return (true, ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>.Success(raw));
+            var raw = GetAttendanceOptionsResponseModel.FromJson(response.Content);
+            return (true, ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel>.Success(raw));
         }
         catch (Exception ex) when (ex is not JsonException)
         {
             throw new Exception("Network error occurred", ex);
         }
     }
-
 }

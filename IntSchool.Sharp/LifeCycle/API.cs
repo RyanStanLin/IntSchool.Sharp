@@ -11,5 +11,5 @@ public partial class API(string? xToken = null)
     public string? XToken { get; set; } = xToken;
     
     public event EventHandler<FallbackJsonErrorEventArgs>? OnFallbackJsonError;
-    public event EventHandler<UnauthorizedErrorEventArgs>? OnUnauthorizedError;
+    public event EventHandler<UnauthorizedErrorEventArgs>? OnServerSideError;
 }

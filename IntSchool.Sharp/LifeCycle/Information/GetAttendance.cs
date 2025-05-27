@@ -10,12 +10,13 @@ namespace IntSchool.Sharp.LifeCycle;
 
 public partial class API
 {
-    public (bool isSuccess, ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>? apiResult) GetStudentCurriculum(SharedStudentTimespanConfiguration configuration)
+    public (bool isSuccess, ApiResult<GetAttendanceResponseModel, ErrorResponseModel>? apiResult) GetAttendance(SharedStudentTimespanConfiguration configuration, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of SharedStudentTimespanConfiguration
-        RestRequest request = new RestRequest(resource: Constants.GetStudentCurriculumPath + configuration.SchoolYearId, method: Method.Get)
+        RestRequest request = new RestRequest(resource: Constants.GetAttendancePath + configuration.SchoolYearId, method: Method.Get)
             .AddHeader(Constants.JsonXPathKey, XToken)
+            .AddHeader(Constants.JsonXSchoolId, schoolId)
             .AddQueryParameter(Constants.JsonStudentIdKey, configuration.StudentId)
             .AddQueryParameter(Constants.JsonStartTimeKey, configuration.StartTime.ToUnixTimestampMilliseconds())
             .AddQueryParameter(Constants.JsonEndTimeKey, configuration.EndTime.ToUnixTimestampMilliseconds());
@@ -28,7 +29,7 @@ public partial class API
                 try
                 {
                     var error = ErrorResponseModel.FromJson(response.Content);
-                    var result = ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>.Error(error);
+                    var result = ApiResult<GetAttendanceResponseModel, ErrorResponseModel>.Error(error);
                     var eventArgs =
                         new UnauthorizedErrorEventArgs(
                             timestamp:error.Timestamp.DateTime,
@@ -49,8 +50,8 @@ public partial class API
                 }
             }
             
-            var raw = GetStudentCurriculumResponseModel.FromJson(response.Content);
-            return (true, ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>.Success(raw));
+            var raw = GetAttendanceResponseModel.FromJson(response.Content);
+            return (true, ApiResult<GetAttendanceResponseModel, ErrorResponseModel>.Success(raw));
         }
         catch (Exception ex) when (ex is not JsonException)
         {

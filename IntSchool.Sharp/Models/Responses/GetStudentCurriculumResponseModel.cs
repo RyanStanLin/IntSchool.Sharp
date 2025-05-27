@@ -174,27 +174,6 @@ namespace IntSchool.Sharp.Models
         public bool IsSubstitute { get; set; }
     }
 
-    public partial class ClassPeriod
-    {
-        [JsonProperty("classPeriodId")]
-        public long ClassPeriodId { get; set; }
-
-        [JsonProperty("description")]
-        public string Description { get; set; }
-
-        [JsonProperty("start")]
-        public long Start { get; set; }
-
-        [JsonProperty("end")]
-        public long End { get; set; }
-
-        [JsonProperty("sevenFive")]
-        public bool SevenFive { get; set; }
-
-        [JsonProperty("isFullPeriodArranged")]
-        public bool IsFullPeriodArranged { get; set; }
-    }
-
     public partial class GetStudentCurriculumResponseModel
     {
         public static GetStudentCurriculumResponseModel FromJson(string json) => JsonConvert.DeserializeObject<GetStudentCurriculumResponseModel>(json, IntSchool.Sharp.Models.ConverterGetStudentCurriculumResponseModel.Settings);

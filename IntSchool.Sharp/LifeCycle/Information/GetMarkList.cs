@@ -18,7 +18,7 @@ public partial class API
         ArgumentException.ThrowIfNullOrEmpty(courseId);
         ArgumentException.ThrowIfNullOrEmpty(schoolYearId);
         ArgumentException.ThrowIfNullOrEmpty(studentId);
-        //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of GetStudentCurriculumConfiguration
+        //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of SharedStudentTimespanConfiguration
         RestRequest request = new RestRequest(resource: Constants.GetMarkListPath, method: Method.Get)
             .AddHeader(Constants.JsonXPathKey, XToken)
             .AddQueryParameter(Constants.JsonCourseIdKey, courseId)
@@ -33,7 +33,7 @@ public partial class API
         {
             var response = Client.Execute(request);
 
-            if (response.StatusCode is HttpStatusCode.BadRequest)
+            if (response.StatusCode is not HttpStatusCode.OK)
             {
                 try
                 {
@@ -44,7 +44,7 @@ public partial class API
                             timestamp: error.Timestamp.DateTime,
                             xToken: XToken
                         );
-                    OnUnauthorizedError?.Invoke(this, eventArgs);
+                    OnServerSideError?.Invoke(this, eventArgs);
 
                     return (false, result);
                 }
