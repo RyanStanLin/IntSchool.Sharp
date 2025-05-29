@@ -2,7 +2,7 @@ using Newtonsoft.Json;
 
 namespace IntSchool.Sharp.Data.EventArguments;
 
-public sealed class FallbackJsonErrorEventArgs(
+public sealed class ContentMappingErrorEventArgs(
     DateTime timestamp,
     string? json,
     JsonException jsonException): EventArgs

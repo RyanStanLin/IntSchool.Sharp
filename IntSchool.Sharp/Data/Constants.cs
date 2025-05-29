@@ -17,6 +17,8 @@ internal static class Constants
     internal const string GetMarkDetailPath = "/api/task/detail";
     internal const string GetAttendanceOptionsPath = "api/attendance/attendance-status";
     internal const string GetAttendancePath = "/api/attendance/statistic/student/";
+    internal const string LeavesPath = "/api/attendance/leave-application";
+    internal const string RetrieveLeaveRequestPath = "/api/attendance/leave-application/retrieve";
 
     internal const string JsonXPathKey = "X-Token";
     internal const string JsonXSchoolId = "x-schoolid";
@@ -32,6 +34,9 @@ internal static class Constants
     internal const string JsonPageCurrentKay = "pageCurrent";
     internal const string JsonNameKey = "name";
     internal const string JsonTaskStudentIdKey = "taskStudentId";
+    internal const string JsonLeaveApplicationIdKey = "leaveApplicationId";
 
     internal const string DefaultSchoolId = "8";
+    internal const string LeaveTypePersonal = "personal";
+    internal const string LeaveTypeIllness = "illness";
 }

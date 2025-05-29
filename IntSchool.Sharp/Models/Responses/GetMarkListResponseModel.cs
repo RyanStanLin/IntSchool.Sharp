@@ -27,10 +27,10 @@ namespace IntSchool.Sharp.Models
         public long TotalItem { get; set; }
 
         [JsonProperty("items")]
-        public List<Item> Items { get; set; }
+        public List<GetMarkListItem> Items { get; set; }
     }
 
-    public partial class Item
+    public partial class GetMarkListItem
     {
         [JsonProperty("entityId")]
         public long EntityId { get; set; }

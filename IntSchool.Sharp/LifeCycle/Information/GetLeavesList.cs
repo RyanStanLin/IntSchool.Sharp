@@ -1,29 +1,27 @@
 using System.Net;
 using IntSchool.Sharp.Data.EventArguments;
-using IntSchool.Sharp.Extensions;
 using IntSchool.Sharp.Models;
 using IntSchool.Sharp.RequestConfigs;
 using Newtonsoft.Json;
 using RestSharp;
 
 namespace IntSchool.Sharp.LifeCycle;
-
 public partial class API
 {
-    public (bool isSuccess, ApiResult<GetMarkDetailResponseModel, ErrorResponseModel>? apiResult) GetMarkDetail(
-        string taskStudentId, string studentId)
+    public (bool isSuccess, ApiResult<GetLeavesListResponseModel, ErrorResponseModel>? apiResult) GetLeavesList(
+        string studentId, GetPageControlConfiguration configuration)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         ArgumentException.ThrowIfNullOrEmpty(studentId);
-        ArgumentException.ThrowIfNullOrEmpty(taskStudentId);
         //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of SharedStudentTimespanConfiguration
-        RestRequest request = new RestRequest(resource: Constants.GetMarkDetailPath, method: Method.Get)
+        RestRequest request = new RestRequest(resource: Constants.LeavesPath, method: Method.Get)
             .AddHeader(Constants.JsonXPathKey, XToken)
-            .AddQueryParameter(Constants.JsonTaskStudentIdKey, taskStudentId)
-            .AddQueryParameter(Constants.JsonStudentIdKey, studentId);
+            .AddQueryParameter(Constants.JsonStudentIdKey, studentId)
+            .AddQueryParameter(Constants.JsonPageSizeKey, configuration.PageSize)
+            .AddQueryParameter(Constants.JsonPageCurrentKay, configuration.PageCurrent);
         return TryExecute(
             request,
-            GetMarkDetailResponseModel.FromJson,
+            GetLeavesListResponseModel.FromJson,
             ErrorResponseModel.FromJson
         );
         /*try
@@ -35,7 +33,7 @@ public partial class API
                 try
                 {
                     var error = ErrorResponseModel.FromJson(response.Content);
-                    var result = ApiResult<GetMarkDetailResponseModel, ErrorResponseModel>.Error(error);
+                    var result = ApiResult<GetLeavesListResponseModel, ErrorResponseModel>.Error(error);
                     var eventArgs =
                         new RemoteErrorEventArgs(
                             timestamp: error.Timestamp.DateTime,
@@ -57,8 +55,8 @@ public partial class API
                 }
             }
 
-            var raw = GetMarkDetailResponseModel.FromJson(response.Content);
-            return (true, ApiResult<GetMarkDetailResponseModel, ErrorResponseModel>.Success(raw));
+            var raw = GetLeavesListResponseModel.FromJson(response.Content);
+            return (true, ApiResult<GetLeavesListResponseModel, ErrorResponseModel>.Success(raw));
         }
         catch (Exception ex) when (ex is not JsonException)
         {

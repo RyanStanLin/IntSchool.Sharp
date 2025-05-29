@@ -10,20 +10,26 @@ namespace IntSchool.Sharp.LifeCycle;
 
 public partial class API
 {
-    public (bool isSuccess, ApiResult<GetMarkDetailResponseModel, ErrorResponseModel>? apiResult) GetMarkDetail(
-        string taskStudentId, string studentId)
+    public (bool isSuccess, ApiResult<ErrorResponseModel>? apiResult) PostLeaveRequest(PostLeaveConfiguration config, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
-        ArgumentException.ThrowIfNullOrEmpty(studentId);
-        ArgumentException.ThrowIfNullOrEmpty(taskStudentId);
-        //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of SharedStudentTimespanConfiguration
-        RestRequest request = new RestRequest(resource: Constants.GetMarkDetailPath, method: Method.Get)
-            .AddHeader(Constants.JsonXPathKey, XToken)
-            .AddQueryParameter(Constants.JsonTaskStudentIdKey, taskStudentId)
-            .AddQueryParameter(Constants.JsonStudentIdKey, studentId);
+        var model = new PostLeaveRequestRequestModel()
+        {
+            StartTime = DateTimeToTimestampExtension.ToUnixTimestampMilliseconds(config.StartTime),
+            EndTime = DateTimeToTimestampExtension.ToUnixTimestampMilliseconds(config.EndTime),
+            Reason = config.Message,
+            ReasonId = (short)config.Reason,
+            ResourceIds = new List<object>(),
+            StudentId = config.StudentId,
+            Type = config.Type.GetDescription()
+        };
+        string body = model.ToJson();
+        RestRequest request = new RestRequest(resource: Constants.LeavesPath, method: Method.Post)
+            .AddBody(body)
+            .AddHeader(Constants.JsonXSchoolId, schoolId)
+            .AddHeader(Constants.JsonXPathKey, XToken);
         return TryExecute(
             request,
-            GetMarkDetailResponseModel.FromJson,
             ErrorResponseModel.FromJson
         );
         /*try
@@ -35,16 +41,15 @@ public partial class API
                 try
                 {
                     var error = ErrorResponseModel.FromJson(response.Content);
-                    var result = ApiResult<GetMarkDetailResponseModel, ErrorResponseModel>.Error(error);
                     var eventArgs =
                         new RemoteErrorEventArgs(
-                            timestamp: error.Timestamp.DateTime,
+                            timestamp:error.Timestamp.DateTime,
                             raw: error,
-                            xToken: XToken
+                            xToken:XToken
                         );
                     OnRemoteError?.Invoke(this, eventArgs);
-
-                    return (false, result);
+                    var result = ApiResult<ErrorResponseModel>.Error(error);
+                    return (false,result);
                 }
                 catch (JsonException ex)
                 {
@@ -56,14 +61,12 @@ public partial class API
                     return (false, null);
                 }
             }
-
-            var raw = GetMarkDetailResponseModel.FromJson(response.Content);
-            return (true, ApiResult<GetMarkDetailResponseModel, ErrorResponseModel>.Success(raw));
+            var raw = ApiResult<ErrorResponseModel>.Success();
+            return (true,raw);
         }
         catch (Exception ex) when (ex is not JsonException)
         {
             throw new Exception("Network error occurred", ex);
         }*/
     }
-
 }

@@ -13,7 +13,12 @@ public partial class API
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         RestRequest request = new RestRequest(resource: Constants.GetAccountStudentsPath, method: Method.Get)
             .AddHeader(Constants.JsonXPathKey, XToken);
-        try
+        return TryExecute(
+            request,
+            GetAccountStudentsResponseModel.FromJson,
+            ErrorResponseModel.FromJson
+        );
+        /*try
         {
             var response = Client.Execute(request);
 
@@ -24,21 +29,22 @@ public partial class API
                     var error = ErrorResponseModel.FromJson(response.Content);
                     var result = ApiResult<List<GetAccountStudentsResponseModel>, ErrorResponseModel>.Error(error);
                     var eventArgs =
-                        new UnauthorizedErrorEventArgs(
+                        new RemoteErrorEventArgs(
                             timestamp:error.Timestamp.DateTime,
+                            raw: error,
                             xToken:XToken
                         );
-                    OnServerSideError?.Invoke(this, eventArgs);
+                    OnRemoteError?.Invoke(this, eventArgs);
                     
                     return (false, result);
                 }
                 catch (JsonException ex)
                 {
-                    var eventArgs = new FallbackJsonErrorEventArgs(
+                    var eventArgs = new ContentMappingErrorEventArgs(
                         timestamp: DateTime.Now,
                         json: response.Content,
                         jsonException: ex);
-                    OnFallbackJsonError?.Invoke(this, eventArgs);
+                    OnContentMappingError?.Invoke(this, eventArgs);
                     return (false, null);
                 }
             }
@@ -49,6 +55,6 @@ public partial class API
         catch (Exception ex) when (ex is not JsonException)
         {
             throw new Exception("Network error occurred", ex);
-        }
+        }*/
     }
 }
