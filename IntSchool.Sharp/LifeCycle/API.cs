@@ -12,7 +12,6 @@ public partial class API(string? xToken = null)
     public static API Instance => _instanceHolder.Value;
     private readonly RestClient Client = new(Constants.IntSchoolRootUrl);
     public string? XToken { get; set; } = xToken;
-    
     public event EventHandler<ContentMappingErrorEventArgs>? OnContentMappingError;
     public event EventHandler<RemoteErrorEventArgs>? OnRemoteError;
     
