@@ -7,7 +7,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\IntSchool.Sharp\IntSchool.Sharp.csproj" />
+      <ProjectReference Include="..\IntSchool.Sharp.Core\IntSchool.Sharp.Core.csproj" />
     </ItemGroup>
 
 </Project>

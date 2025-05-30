@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntSchool.Sharp", "IntSchool.Sharp\IntSchool.Sharp.csproj", "{F0FD8816-6190-446F-B4C9-5455DF05D800}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntSchool.Sharp.Core", "IntSchool.Sharp.Core\IntSchool.Sharp.Core.csproj", "{F0FD8816-6190-446F-B4C9-5455DF05D800}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoConsole", "DemoConsole\DemoConsole.csproj", "{96B2AC3D-5FED-4C6F-8368-B8C793662162}"
 EndProject
