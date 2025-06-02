@@ -6,9 +6,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel>? apiResult) GetAttendanceOptions()
+    public  ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel> GetAttendanceOptions()
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         RestRequest request = new RestRequest(resource: Constants.GetAttendanceOptionsPath, method: Method.Get)

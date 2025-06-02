@@ -4,29 +4,17 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess,LoginResponseModel raw) LoginByVerifySms(LoginByVerifySmsRequestModel loginByVerifySmsRequestModel, bool replaceXTokenIfSuccess = true)
+    public ApiResult<LoginResponseModel, ErrorResponseModel> LoginByVerifySms(LoginByVerifySmsRequestModel loginByVerifySmsRequestModel)
     {
         string body = loginByVerifySmsRequestModel.ToJson();
         RestRequest request = new RestRequest(resource: Constants.ApiLoginPath, method: Method.Post)
             .AddBody(body, contentType: Constants.JsonUtf8ContentType);
-        try
-        {
-            var response = _client.Execute(request);
-            var raw = LoginResponseModel.FromJson(response.Content);
-            
-            if (raw.Success is false)
-                throw new Exception($"Login failed: {raw.Msg}");
-            
-            if (raw.Success && replaceXTokenIfSuccess)
-                XToken = raw.Token;
-
-            return (raw.Success,raw);
-        }
-        catch (Exception ex) when (ex is not JsonException)
-        {
-            throw new Exception("Network error occurred", ex);
-        }
+        return TryExecute(
+            request,
+            LoginResponseModel.FromJson,
+            ErrorResponseModel.FromJson
+        );
     }
 }

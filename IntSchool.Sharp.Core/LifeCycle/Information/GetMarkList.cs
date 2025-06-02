@@ -8,9 +8,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<GetMarkListResponseModel, ErrorResponseModel>? apiResult) GetMarkList(
+    public  ApiResult<GetMarkListResponseModel, ErrorResponseModel> GetMarkList(
         string courseId, string schoolYearId, string studentId, GetPageControlConfiguration? configuration = null, 
         string? nameFilter = null)
     {

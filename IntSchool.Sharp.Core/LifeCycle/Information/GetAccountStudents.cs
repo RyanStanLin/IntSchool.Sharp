@@ -6,9 +6,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<List<GetAccountStudentsResponseModel>, ErrorResponseModel>? apiResult) GetAccountStudents()
+    public  ApiResult<List<GetAccountStudentsResponseModel>, ErrorResponseModel> GetAccountStudents()
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         RestRequest request = new RestRequest(resource: Constants.GetAccountStudentsPath, method: Method.Get)

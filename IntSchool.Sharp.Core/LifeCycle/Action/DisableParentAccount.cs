@@ -3,9 +3,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<ErrorResponseModel>? apiResult) DisableParentAccount(long parentId, string schoolId = Constants.DefaultSchoolId)
+    public  ApiResult<ErrorResponseModel> DisableParentAccount(long parentId, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         var model = new ParentAccountIdRequestModel()

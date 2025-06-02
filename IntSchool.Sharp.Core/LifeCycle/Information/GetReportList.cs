@@ -3,9 +3,9 @@ using IntSchool.Sharp.Core.RequestConfigs;
 using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<List<GetReportListResponseModel>, ErrorResponseModel>? apiResult) GetReportList(
+    public  ApiResult<List<GetReportListResponseModel>, ErrorResponseModel> GetReportList(
         string schoolYearId, string studentId, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);

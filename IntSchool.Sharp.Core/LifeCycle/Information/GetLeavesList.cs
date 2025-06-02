@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<GetLeavesListResponseModel, ErrorResponseModel>? apiResult) GetLeavesList(
+    public  ApiResult<GetLeavesListResponseModel, ErrorResponseModel> GetLeavesList(
         string studentId, GetPageControlConfiguration configuration)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);

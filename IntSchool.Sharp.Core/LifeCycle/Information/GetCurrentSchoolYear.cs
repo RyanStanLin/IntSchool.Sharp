@@ -6,9 +6,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel>? apiResult) GetCurrentSchoolYear()
+    public  ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel> GetCurrentSchoolYear()
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         RestRequest request = new RestRequest(resource: Constants.GetCurrentSchoolYearPath, method: Method.Get)

@@ -7,9 +7,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<List<GetRelatedCoursesResponseModel>, ErrorResponseModel>? apiResult) GetRelatedCourses(GetRelatedCoursesConfiguration config, string studentId)
+    public  ApiResult<List<GetRelatedCoursesResponseModel>, ErrorResponseModel> GetRelatedCourses(GetRelatedCoursesConfiguration config, string studentId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         ArgumentException.ThrowIfNullOrEmpty(studentId);

@@ -2,9 +2,9 @@ using IntSchool.Sharp.Core.Models;
 using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<GetReportDetailResponseModel, ErrorResponseModel>? apiResult) GetReportDetail(
+    public  ApiResult<GetReportDetailResponseModel, ErrorResponseModel> GetReportDetail(
         string gradePeriodId, string studentId, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);

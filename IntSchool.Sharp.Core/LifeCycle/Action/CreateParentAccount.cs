@@ -5,9 +5,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<ErrorResponseModel>? apiResult) CreateParentAccount(CreateParentAccountRequestModel model, string schoolId = Constants.DefaultSchoolId)
+    public  ApiResult<ErrorResponseModel> CreateParentAccount(CreateParentAccountRequestModel model, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         string body = model.ToJson();

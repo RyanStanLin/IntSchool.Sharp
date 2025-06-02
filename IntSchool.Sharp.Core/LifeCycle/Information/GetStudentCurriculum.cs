@@ -8,9 +8,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>? apiResult) GetStudentCurriculum(SharedStudentTimespanConfiguration configuration)
+    public  ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel> GetStudentCurriculum(SharedStudentTimespanConfiguration configuration)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         //ArgumentException.ThrowIfNullOrEmpty(studentId); Already done in side the declaration of SharedStudentTimespanConfiguration

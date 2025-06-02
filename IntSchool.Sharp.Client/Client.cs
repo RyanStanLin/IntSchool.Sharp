@@ -1,6 +1,11 @@
-﻿namespace IntSchool.Sharp.Client;
+﻿using IntSchool.Sharp.Client.Interfaces;
 
-public class Client
+namespace IntSchool.Sharp.Client;
+
+public class Client<TAuth> where TAuth : IAuthorizationMethod
 {
-    
+    public Client()
+    {
+        
+    }
 }

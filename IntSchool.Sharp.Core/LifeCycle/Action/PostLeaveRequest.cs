@@ -8,9 +8,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<ErrorResponseModel>? apiResult) PostLeaveRequest(PostLeaveConfiguration config, string schoolId = Constants.DefaultSchoolId)
+    public  ApiResult<ErrorResponseModel> PostLeaveRequest(PostLeaveConfiguration config, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         var model = new PostLeaveRequestRequestModel()

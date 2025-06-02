@@ -5,9 +5,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<ErrorResponseModel>? apiResult) RetrieveLeaveRequest(string leaveRequestRequestId, string schoolId = Constants.DefaultSchoolId)
+    public  ApiResult<ErrorResponseModel> RetrieveLeaveRequest(string leaveRequestRequestId, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         ArgumentException.ThrowIfNullOrEmpty(leaveRequestRequestId);

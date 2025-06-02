@@ -6,9 +6,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<List<GetParentsResponseModel>, ErrorResponseModel>? apiResult) GetParents(string studentId)
+    public  ApiResult<List<GetParentsResponseModel>, ErrorResponseModel> GetParents(string studentId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         ArgumentException.ThrowIfNullOrEmpty(studentId);

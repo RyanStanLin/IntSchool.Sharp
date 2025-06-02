@@ -3,9 +3,9 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API
+public partial class Api
 {
-    public (bool isSuccess, ApiResult<ErrorResponseModel>? apiResult) UpdateParentAccount(UpdateParentAccountRequestModel model, string schoolId = Constants.DefaultSchoolId)
+    public  ApiResult<ErrorResponseModel> UpdateParentAccount(UpdateParentAccountRequestModel model, string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         string body = model.ToJson();

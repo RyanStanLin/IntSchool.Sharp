@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using IntSchool.Sharp.Core.Data.EventArguments;
 using IntSchool.Sharp.Core.Models;
@@ -6,16 +7,16 @@ using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
-public partial class API(string? xToken = null)
+public partial class Api(string? xToken = null)
 {
-    private static readonly Lazy<API> _instanceHolder = new(() => new API());
-    public static API Instance => _instanceHolder.Value;
+    private static readonly Lazy<Api> _instanceHolder = new(() => new Api());
+    public static Api Instance => _instanceHolder.Value;
     private readonly RestClient _client = new(Constants.IntSchoolRootUrl);
     public string? XToken { get; set; } = xToken;
     public event EventHandler<ContentMappingErrorEventArgs>? OnContentMappingError;
     public event EventHandler<RemoteErrorEventArgs>? OnRemoteError;
     
-    private (bool isSuccess, ApiResult<TSuccess, TError>? apiResult) TryExecute<TSuccess, TError>(
+    private ApiResult<TSuccess, TError> TryExecute<TSuccess, TError>(
         RestRequest request,
         Func<string, TSuccess> parseSuccess,
         Func<string, TError> parseError
@@ -39,7 +40,7 @@ public partial class API(string? xToken = null)
                         xToken: XToken
                     ));
 
-                    return (false, result);
+                    return result;
                 }
                 catch (JsonException ex)
                 {
@@ -48,12 +49,13 @@ public partial class API(string? xToken = null)
                         json: response.Content,
                         jsonException: ex
                     ));
-                    return (false, null);
+                    var result = ApiResult<TSuccess, TError>.ErrorNotMappable();
+                    return result;
                 }
             }
 
             var raw = parseSuccess(response.Content!);
-            return (true, ApiResult<TSuccess, TError>.Success(raw));
+            return ApiResult<TSuccess, TError>.Success(raw);
         }
         catch (Exception ex) when (ex is not JsonException)
         {
@@ -61,10 +63,9 @@ public partial class API(string? xToken = null)
         }
     }
     
-    private (bool isSuccess, ApiResult<TError>? apiResult) TryExecute<TError>(
+    private ApiResult<TError> TryExecute<TError>(
         RestRequest request,
-        Func<string, TError> parseError
-    )
+        Func<string, TError> parseError)
         where TError : class
     {
         try
@@ -84,7 +85,7 @@ public partial class API(string? xToken = null)
                         xToken: XToken
                     ));
 
-                    return (false, result);
+                    return result;
                 }
                 catch (JsonException ex)
                 {
@@ -93,11 +94,12 @@ public partial class API(string? xToken = null)
                         json: response.Content,
                         jsonException: ex
                     ));
-                    return (false, null);
+                    var result = ApiResult<TError>.ErrorNotMappable();
+                    return result;
                 }
             }
 
-            return (true, ApiResult<TError>.Success());
+            return ApiResult<TError>.Success();
         }
         catch (Exception ex) when (ex is not JsonException)
         {
