@@ -1,6 +1,6 @@
 namespace IntSchool.Sharp.Client.Interfaces;
 
-public interface ITokenRenewableAuthorizationMethod : IAuthorizationMethod
+public interface ITokenRenewableAuthorized : IAuthorized
 {
     public void RenewToken();
 }

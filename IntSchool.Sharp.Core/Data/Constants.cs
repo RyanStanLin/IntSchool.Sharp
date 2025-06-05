@@ -4,8 +4,8 @@ internal static class Constants
 {
     internal const string IntSchoolRootUrl = "https://pcd.intschool.cn";
     
-    internal const string ApiSendSmsPath = "/api/login/vcodeMobileSend";
-    internal const string ApiLoginPath = "/api/login/unify";
+    internal const string SendSmsCodePath = "/api/login/vcodeMobileSend";
+    internal const string LoginPath = "/api/login/unify";
     internal const string GetAccountStudentsPath = "/api/student/list";
     internal const string GetAccountInfoPath = "/api/parent/userInfo";
     internal const string GetStudentDetailPath = "/api/student/detail";
@@ -25,6 +25,8 @@ internal static class Constants
     internal const string UpdateParentPath = "/api/parent/update";
     internal const string DisableParentPath = "/api/parent/disable";
     internal const string EnableParentPath = "/api/parent/enable";
+    internal const string SendEMailCodePath = "/api/login/vcodeSend";
+    internal const string ResetPasswordByVerificationCodePath = "/api/login/resetPassword";
 
     internal const string JsonXPathKey = "X-Token";
     internal const string JsonXSchoolId = "x-schoolid";
@@ -42,8 +44,13 @@ internal static class Constants
     internal const string JsonTaskStudentIdKey = "taskStudentId";
     internal const string JsonLeaveApplicationIdKey = "leaveApplicationId";
     internal const string JsonGradePeriodIdKey = "gradePeriodId";
+    internal const string JsonAccountKey = "account";
+    internal const string JsonAreaCodeKey = "areaCode";
+    internal const string JsonMobileKey = "mobile";
 
     internal const string DefaultSchoolId = "8";
+    internal const string DefaultAreaCode = "86";
+    internal const string DefaultEmailKeyValue = "email";
     internal const string LeaveTypePersonal = "personal";
     internal const string LeaveTypeIllness = "illness";
 }

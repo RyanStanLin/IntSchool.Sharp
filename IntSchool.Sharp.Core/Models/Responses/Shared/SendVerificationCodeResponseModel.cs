@@ -4,7 +4,7 @@
 //
 //    using IntSchool.Sharp.Core.Models;
 //
-//    var sendSmsResponseModel = SendSmsResponseModel.FromJson(jsonString);
+//    var sendSmsResponseModel = SendVerificationCodeResponseModel.FromJson(jsonString);
 
 namespace IntSchool.Sharp.Core.Models
 {
@@ -15,7 +15,7 @@ namespace IntSchool.Sharp.Core.Models
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class SendSmsResponseModel
+    public partial class SendVerificationCodeResponseModel
     {
         [JsonProperty("success")]
         public bool Success { get; set; }
@@ -27,17 +27,17 @@ namespace IntSchool.Sharp.Core.Models
         public string ResMsg { get; set; }
     }
 
-    public partial class SendSmsResponseModel
+    public partial class SendVerificationCodeResponseModel
     {
-        public static SendSmsResponseModel FromJson(string json) => JsonConvert.DeserializeObject<SendSmsResponseModel>(json, ConverterSendSmsResponseModel.Settings);
+        public static SendVerificationCodeResponseModel FromJson(string json) => JsonConvert.DeserializeObject<SendVerificationCodeResponseModel>(json, ConverterSendVerificationCodeResponseModel.Settings);
     }
 
-    public static class SerializeSendSmsResponseModel
+    public static class SerializeSendVerificationCodeResponseModel
     {
-        public static string ToJson(this SendSmsResponseModel self) => JsonConvert.SerializeObject(self, ConverterSendSmsResponseModel.Settings);
+        public static string ToJson(this SendVerificationCodeResponseModel self) => JsonConvert.SerializeObject(self, ConverterSendVerificationCodeResponseModel.Settings);
     }
 
-    internal static class ConverterSendSmsResponseModel
+    internal static class ConverterSendVerificationCodeResponseModel
     {
         public static readonly JsonSerializerSettings Settings = new JsonSerializerSettings
         {

@@ -1,18 +1,17 @@
 using IntSchool.Sharp.Core.Models;
-using Newtonsoft.Json;
+using IntSchool.Sharp.Models;
 using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
 public partial class Api
 {
-    public ApiResult<LoginResponseModel, ErrorResponseModel> LoginByVerifySms(string phoneNumber, string verificationCode, string areaCode = Constants.DefaultAreaCode)
+    public ApiResult<LoginResponseModel, ErrorResponseModel> LoginByPassword(string account, string password)
     {
-        var raw = new LoginByVerifySmsRequestModel()
+        var raw = new LoginByPasswordRequestModel()
         {
-            Account = phoneNumber,
-            AreaCode = areaCode,
-            Vcode = verificationCode
+            Account = account,
+            Password = password
         };
         string body = raw.ToJson();
         RestRequest request = new RestRequest(resource: Constants.LoginPath, method: Method.Post)

@@ -15,13 +15,13 @@ namespace IntSchool.Sharp.Core.Models
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
 
-    public partial class LoginByVerifySmsRequestModel(string areaCode, string mobile, string verifyCode)
+    public partial class LoginByVerifySmsRequestModel
     {
-        [JsonProperty("account")] public string Account { get; set; } = mobile;
+        [JsonProperty("account")] public string Account { get; set; }
 
-        [JsonProperty("vcode")] public string Vcode { get; set; } = verifyCode;
+        [JsonProperty("vcode")] public string Vcode { get; set; } 
 
-        [JsonProperty("areaCode")] public string AreaCode { get; set; } = areaCode;
+        [JsonProperty("areaCode")] public string AreaCode { get; set; }
     }
 
     public partial class LoginByVerifySmsRequestModel
