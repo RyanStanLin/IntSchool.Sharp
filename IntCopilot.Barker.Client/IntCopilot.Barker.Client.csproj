@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <UserSecretsId>dotnet-IntCopilot.Barker-143ec31b-6b7e-4a70-8abf-d5a84b34108d</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="BarkerSharper" Version="1.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\IntCopilot.Barker.Worker\IntCopilot.Barker.Worker.csproj" />
+    </ItemGroup>
+</Project>

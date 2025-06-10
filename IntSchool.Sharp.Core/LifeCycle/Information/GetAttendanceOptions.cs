@@ -8,11 +8,12 @@ namespace IntSchool.Sharp.Core.LifeCycle;
 
 public partial class Api
 {
-    public  ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel> GetAttendanceOptions()
+    public  ApiResult<List<GetAttendanceOptionsResponseModel>, ErrorResponseModel> GetAttendanceOptions(string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         RestRequest request = new RestRequest(resource: Constants.GetAttendanceOptionsPath, method: Method.Get)
-            .AddHeader(Constants.JsonXPathKey, XToken);
+            .AddHeader(Constants.JsonXPathKey, XToken)
+            .AddQueryParameter(Constants.JsonXSchoolId, schoolId);
         return TryExecute(
             request,
             GetAttendanceOptionsResponseModel.FromJson,

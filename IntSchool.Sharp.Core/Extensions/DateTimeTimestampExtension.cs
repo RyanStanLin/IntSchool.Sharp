@@ -3,7 +3,7 @@ namespace IntSchool.Sharp.Core.Extensions;
 /// <summary>
 /// Extension methods for converting DateTime to Unix timestamp in milliseconds.
 /// </summary>
-public static class DateTimeToTimestampExtension
+public static class DateTimeTimestampExtension
 {
     /// <summary>
     /// Converts a DateTime to Unix timestamp in milliseconds.
@@ -13,5 +13,17 @@ public static class DateTimeToTimestampExtension
     public static long ToUnixTimestampMilliseconds(this DateTime dateTime)
     {
         return new DateTimeOffset(dateTime.ToUniversalTime()).ToUnixTimeMilliseconds();
+    }
+    
+    public static DateTime ToDateTimeFromUnixMilliseconds(this long timestamp)
+    {
+        try
+        {
+            return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).LocalDateTime;
+        }
+        catch (ArgumentOutOfRangeException ex)
+        {
+            throw new ArgumentOutOfRangeException($"Invalid Unix timestamp: {timestamp}", ex);
+        }
     }
 }

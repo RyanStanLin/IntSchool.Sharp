@@ -15,8 +15,8 @@ public partial class Api
         ArgumentException.ThrowIfNullOrEmpty(XToken);
         var model = new PostLeaveRequestRequestModel()
         {
-            StartTime = DateTimeToTimestampExtension.ToUnixTimestampMilliseconds(config.StartTime),
-            EndTime = DateTimeToTimestampExtension.ToUnixTimestampMilliseconds(config.EndTime),
+            StartTime = DateTimeTimestampExtension.ToUnixTimestampMilliseconds(config.StartTime),
+            EndTime = DateTimeTimestampExtension.ToUnixTimestampMilliseconds(config.EndTime),
             Reason = config.Message,
             ReasonId = (short)config.Reason,
             ResourceIds = new List<object>(),

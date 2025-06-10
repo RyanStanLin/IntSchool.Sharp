@@ -4,7 +4,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntSchool.Sharp.Core", "Int
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoConsole", "DemoConsole\DemoConsole.csproj", "{96B2AC3D-5FED-4C6F-8368-B8C793662162}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntSchool.Sharp.Client", "IntSchool.Sharp.Client\IntSchool.Sharp.Client.csproj", "{E40BCB8F-2981-4B97-B198-117042723AF7}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntCopilot", "IntCopilot", "{3547A8D5-1161-4D80-B759-428D9469C494}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Barker.Client", "IntCopilot.Barker.Client\IntCopilot.Barker.Client.csproj", "{AB1F0810-289E-4082-A101-0F1DC2F49D0A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Barker.Worker", "IntCopilot.Barker.Worker\IntCopilot.Barker.Worker.csproj", "{2E02C416-A22F-4ECF-A276-FA7651C31F18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,9 +24,17 @@ Global
 		{96B2AC3D-5FED-4C6F-8368-B8C793662162}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96B2AC3D-5FED-4C6F-8368-B8C793662162}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96B2AC3D-5FED-4C6F-8368-B8C793662162}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E40BCB8F-2981-4B97-B198-117042723AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E40BCB8F-2981-4B97-B198-117042723AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E40BCB8F-2981-4B97-B198-117042723AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E40BCB8F-2981-4B97-B198-117042723AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB1F0810-289E-4082-A101-0F1DC2F49D0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB1F0810-289E-4082-A101-0F1DC2F49D0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB1F0810-289E-4082-A101-0F1DC2F49D0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB1F0810-289E-4082-A101-0F1DC2F49D0A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E02C416-A22F-4ECF-A276-FA7651C31F18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E02C416-A22F-4ECF-A276-FA7651C31F18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E02C416-A22F-4ECF-A276-FA7651C31F18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E02C416-A22F-4ECF-A276-FA7651C31F18}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AB1F0810-289E-4082-A101-0F1DC2F49D0A} = {3547A8D5-1161-4D80-B759-428D9469C494}
+		{2E02C416-A22F-4ECF-A276-FA7651C31F18} = {3547A8D5-1161-4D80-B759-428D9469C494}
 	EndGlobalSection
 EndGlobal
