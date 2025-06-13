@@ -1,60 +1,41 @@
-using System.Net;
+using System.Threading.Tasks;
 using IntSchool.Sharp.Core.Models;
-using IntSchool.Sharp.Core.Data.EventArguments;
-using Newtonsoft.Json;
 using RestSharp;
 
 namespace IntSchool.Sharp.Core.LifeCycle;
 
 public partial class Api
 {
-    public  ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel> GetCurrentSchoolYear()
+    public ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel> GetCurrentSchoolYear(string schoolId = Constants.DefaultSchoolId)
     {
         ArgumentException.ThrowIfNullOrEmpty(XToken);
-        RestRequest request = new RestRequest(resource: Constants.GetCurrentSchoolYearPath, method: Method.Get)
-            .AddHeader(Constants.JsonXPathKey, XToken);
+
+        var request = BuildGetCurrentSchoolYearRequest(schoolId);
+
         return TryExecute(
             request,
             GetCurrentSchoolYearResponseModel.FromJson,
             ErrorResponseModel.FromJson
         );
-        /*try
-        {
-            var response = _client.Execute(request);
+    }
 
-            if (response.StatusCode is not HttpStatusCode.OK)
-            {
-                try
-                {
-                    var error = ErrorResponseModel.FromJson(response.Content);
-                    var result = ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel>.Error(error);
-                    var eventArgs =
-                        new RemoteErrorEventArgs(
-                            timestamp:error.Timestamp.DateTime,
-                            raw: error,
-                            xToken:XToken
-                        );
-                    OnRemoteError?.Invoke(this, eventArgs);
-                    
-                    return (false, result);
-                }
-                catch (JsonException ex)
-                {
-                    var eventArgs = new ContentMappingErrorEventArgs(
-                        timestamp: DateTime.Now,
-                        json: response.Content,
-                        jsonException: ex);
-                    OnContentMappingError?.Invoke(this, eventArgs);
-                    return (false, null);
-                }
-            }
-            
-            var raw = GetCurrentSchoolYearResponseModel.FromJson(response.Content);
-            return (true, ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel>.Success(raw));
-        }
-        catch (Exception ex) when (ex is not JsonException)
-        {
-            throw new Exception("Network error occurred", ex);
-        }*/
+    public async Task<ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel>> GetCurrentSchoolYearAsync(string schoolId = Constants.DefaultSchoolId)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(XToken);
+
+        var request = BuildGetCurrentSchoolYearRequest(schoolId);
+
+        return await TryExecuteAsync(
+            request,
+            GetCurrentSchoolYearResponseModel.FromJson,
+            ErrorResponseModel.FromJson
+        );
+    }
+
+    private RestRequest BuildGetCurrentSchoolYearRequest(string schoolId)
+    {
+        return new RestRequest(Constants.GetCurrentSchoolYearPath, Method.Get)
+            .AddHeader(Constants.JsonXPathKey, XToken)
+            .AddHeader(Constants.JsonXSchoolId, schoolId);
     }
 }

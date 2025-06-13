@@ -111,7 +111,7 @@ namespace IntCopilot.Barker.Worker
             var response = Api.Instance.GetAttendance(config);
             
             if (response.IsSuccess == false) return;
-
+            Console.WriteLine("DEBUG - Request sent and success");
             var currentState = response.SuccessResult.ToAttendanceDtoModel();
             var profileKey = $"{profile.StudentId}_{profile.SchoolYearId}";
 

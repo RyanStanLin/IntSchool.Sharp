@@ -14,7 +14,8 @@ namespace IntCopilot.Barker.Worker.Data
         public string Id { get; }
         public required string StudentId { get; set; }
         public required string SchoolYearId { get; set; }
-        public required TimeWindow TimeWindow { get; set; }
+        public Func<TimeWindow> TimeWindowProvider { get; set; } = () => TimeWindow.Today;
+        public TimeWindow TimeWindow => TimeWindowProvider();
         public ChangeNotifier OnChanged => _onChanged;
         public List<Subscription> Subscriptions { get; } = new();
     }

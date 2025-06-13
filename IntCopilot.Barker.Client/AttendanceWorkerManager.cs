@@ -44,26 +44,31 @@ public class AttendanceWorkerManager : IDisposable
                     _currentWorker?.Dispose();
 
                     // 创建新的 Worker
-                    /*var testBuilder = AttendanceWorker.New(TimeSpan.FromSeconds(10))
-                        .AddProfile(new Profile()
-                        {
-                            Description = "1",
-                            SchoolYearId = "42",
-                            StudentId = "11012",
-                            TimeWindow = TimeWindow.Today,
-                        }.OnChanged
-                            .Subscribe(
-                                filter:new Filter((prev,curr) => curr.Attendance.HigherThanInclusive(AttendanceOptions.Late)),
-                                action: (prev, curr) =>
-                                    {
-                                        
-                                    })
-                            .Subscribe(
-                                preset: Presets.ImportanceIncreased,
-                                action: (prev, curr) =>
-                                {
-                                    
-                                }).Profile);*/
+                    /*using var builder = AttendanceWorker.New(TimeSpan.FromSeconds(10))
+                                .AddProfile(new Profile()
+                                   {
+                                       Description = "1",
+                                       SchoolYearId = "42",
+                                       StudentId = "11012",
+                                       TimeWindowProvider = () => GetTimeWindowFromString(settings.TimeWindow)
+                                   }.OnChanged
+                                        .Subscribe(
+                                            filter: new Filter((prev, curr) =>
+                                                curr.Attendance.HigherThanInclusive(AttendanceOptions.Late)),
+                                            action: (prev, curr) =>
+                                            {
+                                                //actions
+                                            })
+                                        .Subscribe(
+                                            preset: Presets.ImportanceIncreased,
+                                            action: (prev, curr) =>
+                                            {
+                                                //action
+                                            })
+                                        .GetProfile())
+                                .Build()
+                                .Start();*/
+                    
                     var newWorkerBuilder = AttendanceWorker.New(TimeSpan.FromSeconds(newSettings.PollingIntervalSeconds));
                     
                     foreach (var profileSetting in newSettings.Profiles)
@@ -73,7 +78,7 @@ public class AttendanceWorkerManager : IDisposable
                             Description = profileSetting.Description,
                             StudentId = profileSetting.StudentId,
                             SchoolYearId = profileSetting.SchoolYearId,
-                            TimeWindow = GetTimeWindowFromString(profileSetting.TimeWindow)
+                            TimeWindowProvider = () =>  GetTimeWindowFromString(profileSetting.TimeWindow)
                         };
 
                         // 为每个 profile 创建专门的日志记录器

@@ -7,18 +7,18 @@ namespace IntCopilot.Barker.Worker
 {
     public class ChangeNotifier
     {
-        private readonly Profile _profile;
-        public Profile Profile => _profile;
+        private readonly Profile _getProfile;
+        public Profile GetProfile() => _getProfile;
 
         public ChangeNotifier(Profile profile)
         {
-            _profile = profile ?? throw new ArgumentNullException(nameof(profile));
+            _getProfile = profile ?? throw new ArgumentNullException(nameof(profile));
         }
 
         public ChangeNotifier Subscribe(Action<CourseSession, CourseSession> action)
         {
             ArgumentNullException.ThrowIfNull(action);
-            _profile.Subscriptions.Add(new Subscription { Action = action });
+            _getProfile.Subscriptions.Add(new Subscription { Action = action });
             return this;
         }
 
@@ -26,7 +26,7 @@ namespace IntCopilot.Barker.Worker
         {
             ArgumentNullException.ThrowIfNull(filter);
             ArgumentNullException.ThrowIfNull(action);
-            _profile.Subscriptions.Add(new Subscription { Filter = filter.Predicate, Action = action });
+            _getProfile.Subscriptions.Add(new Subscription { Filter = filter.Predicate, Action = action });
             return this;
         }
 
@@ -40,7 +40,7 @@ namespace IntCopilot.Barker.Worker
                 return preset == Presets.ImportanceIncreased ? currValue > prevValue : currValue < prevValue;
             };
 
-            _profile.Subscriptions.Add(new Subscription { Filter = filter, Action = action });
+            _getProfile.Subscriptions.Add(new Subscription { Filter = filter, Action = action });
             return this;
         }
     }

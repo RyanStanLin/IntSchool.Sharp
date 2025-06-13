@@ -106,4 +106,95 @@ public partial class Api(string? xToken = null)
             throw new Exception("Network error occurred", ex);
         }
     }
+    
+    private async Task<ApiResult<TSuccess, TError>> TryExecuteAsync<TSuccess, TError>(
+        RestRequest request,
+        Func<string, TSuccess> parseSuccess,
+        Func<string, TError> parseError
+    )
+        where TError : class
+    {
+        try
+        {
+            var response = await _client.ExecuteAsync(request);
+
+            if (response.StatusCode is not HttpStatusCode.OK)
+            {
+                try
+                {
+                    var error = parseError(response.Content!);
+                    var result = ApiResult<TSuccess, TError>.Error(error);
+
+                    OnRemoteError?.Invoke(this, new RemoteErrorEventArgs(
+                        timestamp: (error as ErrorResponseModel).Timestamp.DateTime,
+                        raw: error as ErrorResponseModel,
+                        xToken: XToken
+                    ));
+
+                    return result;
+                }
+                catch (JsonException ex)
+                {
+                    OnContentMappingError?.Invoke(this, new ContentMappingErrorEventArgs(
+                        timestamp: DateTime.Now,
+                        json: response.Content,
+                        jsonException: ex
+                    ));
+
+                    return ApiResult<TSuccess, TError>.ErrorNotMappable();
+                }
+            }
+
+            var raw = parseSuccess(response.Content!);
+            return ApiResult<TSuccess, TError>.Success(raw);
+        }
+        catch (Exception ex) when (ex is not JsonException)
+        {
+            throw new Exception("Network error occurred", ex);
+        }
+    }
+
+    private async Task<ApiResult<TError>> TryExecuteAsync<TError>(
+        RestRequest request,
+        Func<string, TError> parseError)
+        where TError : class
+    {
+        try
+        {
+            var response = await _client.ExecuteAsync(request);
+
+            if (response.StatusCode is not HttpStatusCode.OK)
+            {
+                try
+                {
+                    var error = parseError(response.Content!);
+                    var result = ApiResult<TError>.Error(error);
+
+                    OnRemoteError?.Invoke(this, new RemoteErrorEventArgs(
+                        timestamp: (error as ErrorResponseModel).Timestamp.DateTime,
+                        raw: error as ErrorResponseModel,
+                        xToken: XToken
+                    ));
+
+                    return result;
+                }
+                catch (JsonException ex)
+                {
+                    OnContentMappingError?.Invoke(this, new ContentMappingErrorEventArgs(
+                        timestamp: DateTime.Now,
+                        json: response.Content,
+                        jsonException: ex
+                    ));
+
+                    return ApiResult<TError>.ErrorNotMappable();
+                }
+            }
+
+            return ApiResult<TError>.Success();
+        }
+        catch (Exception ex) when (ex is not JsonException)
+        {
+            throw new Exception("Network error occurred", ex);
+        }
+    }
 }
