@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <ServerGarbageCollection>true</ServerGarbageCollection>
         <UserSecretsId>dotnet-IntCopilot.Barker-143ec31b-6b7e-4a70-8abf-d5a84b34108d</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,5 +16,11 @@
 
     <ItemGroup>
       <ProjectReference Include="..\IntCopilot.Barker.Worker\IntCopilot.Barker.Worker.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 </Project>
