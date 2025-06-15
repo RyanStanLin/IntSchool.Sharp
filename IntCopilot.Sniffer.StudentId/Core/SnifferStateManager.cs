@@ -11,7 +11,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
     {
         private readonly ILogger<SnifferStateManager> _logger;
         private readonly SnifferState _state;
-        private readonly ConcurrentQueue<string> _pendingStudents;
+        private readonly ConcurrentQueue<long> _pendingStudents;
         private readonly ManualResetEventSlim _pauseEvent;
         private DiscoveredStudent? _initialStudent;
 
@@ -25,7 +25,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
         {
             _logger = logger;
             _state = new SnifferState();
-            _pendingStudents = new ConcurrentQueue<string>();
+            _pendingStudents = new ConcurrentQueue<long>();
             _pauseEvent = new ManualResetEventSlim(true); // 初始为非暂停状态
         }
 
@@ -33,9 +33,9 @@ namespace IntCopilot.Sniffer.StudentId.Core
         {
             _initialStudent = initialStudent;
             _state.AddStudent(initialStudent);
-            _pendingStudents.Enqueue(initialStudent.StudentId);
+            _pendingStudents.Enqueue(initialStudent.Student.StudentId);
             _state.UpdateStatus(SnifferStatus.Running);
-            _logger.LogInformation("State manager initialized with student {StudentId}", initialStudent.StudentId);
+            _logger.LogInformation("State manager initialized with student {StudentId}", initialStudent.Student.StudentId);
         }
 
         public async Task WaitIfPausedAsync(CancellationToken cancellationToken)
@@ -43,17 +43,20 @@ namespace IntCopilot.Sniffer.StudentId.Core
             await Task.Run(() => _pauseEvent.Wait(cancellationToken), cancellationToken);
         }
 
-        public Task<bool> TryDequeueNextStudentAsync(out string? studentId)
+        public Task<bool> TryDequeueNextStudentAsync(out long? studentId)
         {
-            var success = _pendingStudents.TryDequeue(out studentId);
-            if (success)
+            if (_pendingStudents.TryDequeue(out var rawId))
             {
+                studentId = rawId;
                 _state.DecrementPendingCount();
+                return Task.FromResult(true);
             }
-            return Task.FromResult(success);
+
+            studentId = null;
+            return Task.FromResult(false);
         }
 
-        public void EnqueueStudent(string studentId)
+        public void EnqueueStudent(long studentId)
         {
             _pendingStudents.Enqueue(studentId);
             _state.IncrementPendingCount();

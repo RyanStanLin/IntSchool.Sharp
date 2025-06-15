@@ -37,7 +37,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
         private Task _processingTask = Task.CompletedTask;
         
         // 内部数据
-        private readonly ConcurrentDictionary<string, DiscoveredStudent> _discoveredStudents = new();
+        private readonly ConcurrentDictionary<long, DiscoveredStudent> _discoveredStudents = new();
         private readonly ConcurrentQueue<SnifferWorkItem> _workQueue = new();
 
         public IObservable<SnifferState> StateChanges => _stateSubject.AsObservable();
@@ -116,11 +116,11 @@ namespace IntCopilot.Sniffer.StudentId.Core
             var schoolYearId = await GetSchoolYearIdAsync();
             var initialStudent = new DiscoveredStudent(_config.InitialStudentId, _config.InitialStudentName, schoolYearId);
             
-            _discoveredStudents.TryAdd(initialStudent.StudentId, initialStudent);
+            _discoveredStudents.TryAdd(initialStudent.Student.StudentId, initialStudent);
             _workQueue.Enqueue(new SnifferWorkItem(initialStudent));
             UpdateState(CurrentState.Status); // Trigger state update with initial student
             _logger.LogInformation("Sniffer initialized for student {StudentName} ({StudentId}) in school year {SchoolYearId}.",
-                initialStudent.StudentName, initialStudent.StudentId, schoolYearId);
+                initialStudent.Student.StudentName, initialStudent.Student.StudentId, schoolYearId);
         }
 
         private async Task ProcessStudentWithRateLimitAsync(SnifferWorkItem workItem)
@@ -131,7 +131,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
                 lease = await _rateLimiter.AcquireAsync(1, _cts!.Token);
                 if (!lease.IsAcquired)
                 {
-                    _logger.LogWarning("Failed to acquire rate limit lease. Re-queueing student {StudentId}.", workItem.Student.StudentId);
+                    _logger.LogWarning("Failed to acquire rate limit lease. Re-queueing student {StudentId}.", workItem.Student.Student.StudentId);
                     _workQueue.Enqueue(workItem);
                     return;
                 }
@@ -147,7 +147,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
         private async Task ProcessSingleStudentAsync(SnifferWorkItem workItem)
         {
             var student = workItem.Student;
-            _logger.LogDebug("Processing student {StudentId}", student.StudentId);
+            _logger.LogDebug("Processing student {StudentId}", student.Student.StudentId);
             
             try
             {
@@ -155,14 +155,14 @@ namespace IntCopilot.Sniffer.StudentId.Core
                 var curriculumResult = await _apiClient.GetStudentCurriculumAsync(new SharedStudentTimespanConfiguration
                 {
                     SchoolYearId = student.SchoolYearId.ToString(),
-                    StudentId = student.StudentId,
+                    StudentId = student.Student.StudentId.ToString(),
                     StartTime = timeRange.Start,
                     EndTime = timeRange.End
                 }, _cts!.Token);
 
                 if (!curriculumResult.IsSuccess || curriculumResult.SuccessResult == null)
                 {
-                    throw new SnifferException($"API call failed for student {student.StudentId}: {curriculumResult.ErrorResult?.Message ?? "Unknown error"}");
+                    throw new SnifferException($"API call failed for student {student.Student.StudentId}: {curriculumResult.ErrorResult?.Message ?? "Unknown error"}");
                 }
 
                 ProcessCurriculum(curriculumResult.SuccessResult, student.SchoolYearId);
@@ -170,7 +170,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
             catch (Exception ex)
             {
                 _logger.LogWarning(ex, "Failed to process student {StudentId}. Retry {RetryCount}/{MaxRetries}",
-                    student.StudentId, workItem.RetryCount + 1, _config.MaxRetries);
+                    student.Student.StudentId, workItem.RetryCount + 1, _config.MaxRetries);
                 
                 if (workItem.RetryCount < _config.MaxRetries)
                 {
@@ -178,7 +178,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
                 }
                 else
                 {
-                    _logger.LogError("Max retries reached for student {StudentId}. Giving up.", student.StudentId);
+                    _logger.LogError("Max retries reached for student {StudentId}. Giving up.", student.Student.StudentId);
                 }
             }
         }
@@ -191,7 +191,7 @@ namespace IntCopilot.Sniffer.StudentId.Core
             foreach (var classmate in curriculum.ClassArranges.Values.SelectMany(d => d.Values).SelectMany(c => c.CourseId?.Students ?? new List<GetStudentCurriculumResponseModelStudent>()))
             {
                 var newStudent = new DiscoveredStudent(classmate.StudentId.ToString(), classmate.Name, schoolYearId);
-                if (_discoveredStudents.TryAdd(newStudent.StudentId, newStudent))
+                if (_discoveredStudents.TryAdd(newStudent.Student.StudentId, newStudent))
                 {
                     _workQueue.Enqueue(new SnifferWorkItem(newStudent));
                     newStudentsFound++;

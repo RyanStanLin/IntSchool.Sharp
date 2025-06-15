@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using IntCopilot.Shared;
 
 namespace IntCopilot.DataAccess.Postgres.DataAccess;
 
@@ -124,7 +125,7 @@ public sealed class PostgresStudentRepository : IStudentRepository
                 logger.LogInformation("Checking for '{TableName}' table and index...", TableName);
                 await using (var createTableCmd = new NpgsqlCommand($@"
                     CREATE TABLE IF NOT EXISTS public.{TableName} (
-                        student_id UUID PRIMARY KEY,
+                        student_id BIGINT PRIMARY KEY,
                         student_name TEXT NOT NULL
                     );
                     CREATE INDEX IF NOT EXISTS idx_students_name_trgm ON public.{TableName} USING gin (student_name gin_trgm_ops);", targetConnection))
@@ -157,7 +158,7 @@ public sealed class PostgresStudentRepository : IStudentRepository
     }
 
     /// <inheritdoc />
-    public async Task<Student?> GetStudentByIdAsync(Guid studentId, CancellationToken cancellationToken = default)
+    public async Task<Student?> GetStudentByIdAsync(long studentId, CancellationToken cancellationToken = default)
     {
         await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
         await using var command = new NpgsqlCommand($"SELECT student_id, student_name FROM public.{TableName} WHERE student_id = @Id", connection)
@@ -168,7 +169,7 @@ public sealed class PostgresStudentRepository : IStudentRepository
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         if (await reader.ReadAsync(cancellationToken))
         {
-            return new Student(reader.GetGuid(0), reader.GetString(1));
+            return new Student(reader.GetInt64(0), reader.GetString(1));
         }
         return null;
     }
@@ -196,7 +197,7 @@ public sealed class PostgresStudentRepository : IStudentRepository
     }
 
     /// <inheritdoc />
-    public async Task<bool> DeleteStudentAsync(Guid studentId, CancellationToken cancellationToken = default)
+    public async Task<bool> DeleteStudentAsync(long studentId, CancellationToken cancellationToken = default)
     {
         await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
         await using var command = new NpgsqlCommand($"DELETE FROM public.{TableName} WHERE student_id = @Id", connection)
@@ -246,7 +247,7 @@ public sealed class PostgresStudentRepository : IStudentRepository
         while (await reader.ReadAsync(cancellationToken))
         {
             results.Add(new FuzzySearchResult(
-                new Student(reader.GetGuid(0), reader.GetString(1)), 
+                new Student(reader.GetInt64(0), reader.GetString(1)), 
                 reader.GetFloat(2))
             );
         }

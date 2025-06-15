@@ -1,4 +1,5 @@
 using IntCopilot.DataAccess.Postgres.Models;
+using IntCopilot.Shared;
 
 namespace IntCopilot.DataAccess.Postgres.Models;
 

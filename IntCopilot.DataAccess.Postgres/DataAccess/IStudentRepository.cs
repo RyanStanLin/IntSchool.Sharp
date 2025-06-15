@@ -1,4 +1,5 @@
 using IntCopilot.DataAccess.Postgres.Models;
+using IntCopilot.Shared;
 
 namespace IntCopilot.DataAccess.Postgres.DataAccess;
 
@@ -17,7 +18,7 @@ public interface IStudentRepository : IAsyncDisposable
     /// <summary>
     /// Retrieves a student by their unique ID asynchronously.
     /// </summary>
-    Task<Student?> GetStudentByIdAsync(Guid studentId, CancellationToken cancellationToken = default);
+    Task<Student?> GetStudentByIdAsync(long studentId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates an existing student's information asynchronously.
@@ -27,7 +28,7 @@ public interface IStudentRepository : IAsyncDisposable
     /// <summary>
     /// Deletes a student by their unique ID asynchronously.
     /// </summary>
-    Task<bool> DeleteStudentAsync(Guid studentId, CancellationToken cancellationToken = default);
+    Task<bool> DeleteStudentAsync(long studentId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Performs a fuzzy search for students by name using trigram similarity.

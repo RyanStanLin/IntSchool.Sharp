@@ -10,11 +10,11 @@ namespace IntCopilot.Sniffer.StudentId.Models
     public class SnifferState
     {
         public SnifferStatus Status { get; init; } = SnifferStatus.NotStarted;
-        public IImmutableDictionary<string, DiscoveredStudent> DiscoveredStudents { get; init; } = ImmutableDictionary<string, DiscoveredStudent>.Empty;
+        public IImmutableDictionary<long, DiscoveredStudent> DiscoveredStudents { get; init; } = ImmutableDictionary<long, DiscoveredStudent>.Empty;
         public int PendingQueueCount { get; init; } = 0;
         public SnifferException? LastError { get; init; }
         public DateTimeOffset Timestamp { get; init; } = DateTimeOffset.UtcNow;
-        private readonly ConcurrentDictionary<string, DiscoveredStudent> _discoveredStudents;
+        private readonly ConcurrentDictionary<long, DiscoveredStudent> _discoveredStudents;
         private readonly object _lock = new();
         private volatile SnifferStatus _status;
         private volatile Exception? _lastError;
@@ -27,12 +27,12 @@ namespace IntCopilot.Sniffer.StudentId.Models
         public int PendingCount => _pendingCount;
         public DateTimeOffset LastUpdateTime { get; private set; }
         
-        //public IReadOnlyDictionary<string, DiscoveredStudent> DiscoveredStudents => _discoveredStudents.ToImmutableDictionary();
+        //public IReadOnlyDictionary<long, DiscoveredStudent> DiscoveredStudents => _discoveredStudents.ToImmutableDictionary();
 
         public SnifferState()
         {
             _status = SnifferStatus.NotStarted;
-            _discoveredStudents = new ConcurrentDictionary<string, DiscoveredStudent>();
+            _discoveredStudents = new ConcurrentDictionary<long, DiscoveredStudent>();
             LastUpdateTime = DateTimeOffset.UtcNow;
         }
 
@@ -48,7 +48,7 @@ namespace IntCopilot.Sniffer.StudentId.Models
 
         public bool AddStudent(DiscoveredStudent student)
         {
-            var added = _discoveredStudents.TryAdd(student.StudentId, student);
+            var added = _discoveredStudents.TryAdd(student.Student.StudentId, student);
             if (added)
             {
                 Interlocked.Increment(ref _processedCount);
@@ -57,7 +57,7 @@ namespace IntCopilot.Sniffer.StudentId.Models
             return added;
         }
 
-        public bool TryGetStudent(string studentId, out DiscoveredStudent? student)
+        public bool TryGetStudent(long studentId, out DiscoveredStudent? student)
         {
             return _discoveredStudents.TryGetValue(studentId, out student);
         }

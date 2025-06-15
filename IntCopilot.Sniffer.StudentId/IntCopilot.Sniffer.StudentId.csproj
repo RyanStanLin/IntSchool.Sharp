@@ -14,6 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\IntCopilot.DataAccess.Postgres\IntCopilot.DataAccess.Postgres.csproj" />
       <ProjectReference Include="..\IntSchool.Sharp.Core\IntSchool.Sharp.Core.csproj" />
     </ItemGroup>
 

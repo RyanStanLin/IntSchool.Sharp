@@ -11,8 +11,8 @@ namespace IntCopilot.Sniffer.StudentId.Core
         
         void Initialize(DiscoveredStudent initialStudent);
         Task WaitIfPausedAsync(CancellationToken cancellationToken);
-        Task<bool> TryDequeueNextStudentAsync(out string? studentId);
-        void EnqueueStudent(string studentId);
+        Task<bool> TryDequeueNextStudentAsync(out long? studentId);
+        void EnqueueStudent(long studentId);
         bool IsQueueEmpty { get; }
         void UpdateState(SnifferStatus status, Exception? error = null);
     }
