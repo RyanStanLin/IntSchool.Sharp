@@ -1,3 +1,4 @@
+using System.Data.Common;
 using IntCopilot.DataAccess.Postgres.Configuration;
 using IntCopilot.DataAccess.Postgres.DataAccess;
 using IntCopilot.DataAccess.Postgres.Exceptions;
@@ -123,12 +124,32 @@ public sealed class PostgresStudentRepository : IStudentRepository
 
                 // Ensure students table and its GIN index exist for fuzzy search performance
                 logger.LogInformation("Checking for '{TableName}' table and index...", TableName);
-                await using (var createTableCmd = new NpgsqlCommand($@"
+                
+                var createTableSql = $@"
                     CREATE TABLE IF NOT EXISTS public.{TableName} (
-                        student_id BIGINT PRIMARY KEY,
-                        student_name TEXT NOT NULL
+                        student_id      BIGINT PRIMARY KEY,
+                        student_name    TEXT NOT NULL,
+                        first_name      TEXT,
+                        last_name       TEXT,
+                        student_num     TEXT UNIQUE,
+                        default_name    TEXT,
+                        english_name    TEXT,
+                        email           TEXT UNIQUE,
+                        nationality     TEXT,
+                        enter_year      TEXT,
+                        address         TEXT,
+                        house_name      TEXT,
+                        stage           TEXT,
+                        id_number       TEXT,
+                        image_url       TEXT,
+                        is_male         BOOLEAN NOT NULL,
+                        birthday        DATE,
+                        section_name    TEXT,
+                        class_name      TEXT
                     );
-                    CREATE INDEX IF NOT EXISTS idx_students_name_trgm ON public.{TableName} USING gin (student_name gin_trgm_ops);", targetConnection))
+                    CREATE INDEX IF NOT EXISTS idx_students_name_trgm ON public.{TableName} USING gin (student_name gin_trgm_ops);";
+
+                await using (var createTableCmd = new NpgsqlCommand(createTableSql, targetConnection))
                 {
                     await createTableCmd.ExecuteNonQueryAsync(cancellationToken);
                 }
@@ -145,47 +166,62 @@ public sealed class PostgresStudentRepository : IStudentRepository
     }
     
     /// <inheritdoc />
-    public async Task AddStudentAsync(Student student, CancellationToken cancellationToken = default)
+    public async Task AddStudentAsync(StudentProfile student, CancellationToken cancellationToken = default)
     {
-        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
+        const string sql = $@"
+            INSERT INTO public.{TableName} (
+                student_id, student_name, first_name, last_name, student_num, default_name, english_name, email,
+                nationality, enter_year, address, house_name, stage, id_number, image_url,
+                is_male, birthday, section_name, class_name
+            ) VALUES (
+                @StudentId, @StudentName, @FirstName, @LastName, @StudentNum, @DefaultName, @EnglishName, @Email,
+                @Nationality, @EnterYear, @Address, @HouseName, @Stage, @IdNumber, @ImageUrl,
+                @IsMale, @Birthday, @SectionName, @ClassName
+            );";
         
-        await using var command = new NpgsqlCommand($"INSERT INTO public.{TableName} (student_id, student_name) VALUES (@Id, @Name)", connection)
-        {
-            Parameters = { new("Id", student.StudentId), new("Name", student.StudentName) }
-        };
+        await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
+        await using var command = new NpgsqlCommand(sql, connection);
+        AddStudentProfileParameters(command, student);
+        command.Parameters.Add(new NpgsqlParameter("StudentId", student.StudentId));
         await command.ExecuteNonQueryAsync(cancellationToken);
-        _logger.LogDebug("Added student with ID {StudentId}.", student.StudentId);
+        _logger.LogInformation("Added student with ID {StudentId}.", student.StudentId);
     }
 
     /// <inheritdoc />
-    public async Task<Student?> GetStudentByIdAsync(long studentId, CancellationToken cancellationToken = default)
+    public async Task<StudentProfile?> GetStudentByIdAsync(long studentId, CancellationToken cancellationToken = default)
     {
+        var sql = $"SELECT {AllColumns} FROM public.{TableName} WHERE student_id = @Id";
         await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
-        await using var command = new NpgsqlCommand($"SELECT student_id, student_name FROM public.{TableName} WHERE student_id = @Id", connection)
+        await using var command = new NpgsqlCommand(sql, connection)
         {
-            Parameters = { new("Id", studentId) }
+            Parameters = { new NpgsqlParameter("Id", studentId) }
         };
 
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         if (await reader.ReadAsync(cancellationToken))
         {
-            return new Student(reader.GetInt64(0), reader.GetString(1));
+            return MapReaderToProfile(reader);
         }
         return null;
     }
 
     /// <inheritdoc />
-    public async Task<bool> UpdateStudentAsync(Student student, CancellationToken cancellationToken = default)
+    public async Task<bool> UpdateStudentAsync(StudentProfile student, CancellationToken cancellationToken = default)
     {
+        const string sql = $@"
+            UPDATE public.{TableName} SET
+                student_name = @StudentName, first_name = @FirstName, last_name = @LastName,
+                student_num = @StudentNum, default_name = @DefaultName, english_name = @EnglishName,
+                email = @Email, nationality = @Nationality, enter_year = @EnterYear, address = @Address,
+                house_name = @HouseName, stage = @Stage, id_number = @IdNumber, image_url = @ImageUrl,
+                is_male = @IsMale, birthday = @Birthday, section_name = @SectionName, class_name = @ClassName
+            WHERE student_id = @StudentId;";
+            
         await using var connection = await _dataSource.OpenConnectionAsync(cancellationToken);
-        await using var command = new NpgsqlCommand($"UPDATE public.{TableName} SET student_name = @Name WHERE student_id = @Id", connection)
-        {
-            Parameters =
-            {
-                new NpgsqlParameter("Name", student.StudentName),
-                new NpgsqlParameter("Id", student.StudentId)
-            }
-        };
+        await using var command = new NpgsqlCommand(sql, connection);
+        AddStudentProfileParameters(command, student);
+        command.Parameters.Add(new NpgsqlParameter("StudentId", student.StudentId));
+
         var rowsAffected = await command.ExecuteNonQueryAsync(cancellationToken);
         if (rowsAffected > 0)
         {
@@ -227,8 +263,8 @@ public sealed class PostgresStudentRepository : IStudentRepository
         
         var query = $@"
             SET LOCAL pg_trgm.similarity_threshold = {thresholdString};
-            SELECT student_id, student_name, similarity(student_name, @Name) AS score
-            FROM public.students
+            SELECT {AllColumns}, similarity(student_name, @Name) AS score
+            FROM public.{TableName}
             WHERE student_name % @Name
             ORDER BY score DESC, student_name
             LIMIT 100;"; // Adding a sensible limit to prevent huge result sets + cover similarity_threshold
@@ -246,10 +282,9 @@ public sealed class PostgresStudentRepository : IStudentRepository
         await using var reader = await command.ExecuteReaderAsync(cancellationToken);
         while (await reader.ReadAsync(cancellationToken))
         {
-            results.Add(new FuzzySearchResult(
-                new Student(reader.GetInt64(0), reader.GetString(1)), 
-                reader.GetFloat(2))
-            );
+            var profile = MapReaderToProfile(reader);
+            var similarity = reader.GetFloat(reader.GetOrdinal("score"));
+            results.Add(new FuzzySearchResult(profile, similarity));
         }
         _logger.LogDebug("Fuzzy search for '{Name}' with threshold {Threshold} found {Count} results.", name, similarityThreshold, results.Count);
         return results;
@@ -262,5 +297,58 @@ public sealed class PostgresStudentRepository : IStudentRepository
     {
         await _dataSource.DisposeAsync();
         _logger.LogInformation("PostgresStudentRepository and its connection pool have been disposed.");
+    }
+    
+    // --- Private Helper Methods ---
+
+    private const string AllColumns = @"
+        student_id, student_name, first_name, last_name, student_num, default_name, english_name, email,
+        nationality, enter_year, address, house_name, stage, id_number, image_url,
+        is_male, birthday, section_name, class_name";
+
+    private static StudentProfile MapReaderToProfile(DbDataReader reader) =>
+        new StudentProfile(
+            reader.GetInt64(reader.GetOrdinal("student_id")),
+            reader.GetString(reader.GetOrdinal("student_name")),
+            reader.IsDBNull(reader.GetOrdinal("student_num")) ? null : reader.GetString(reader.GetOrdinal("student_num")),
+            reader.IsDBNull(reader.GetOrdinal("default_name")) ? null : reader.GetString(reader.GetOrdinal("default_name")),
+            reader.IsDBNull(reader.GetOrdinal("english_name")) ? null : reader.GetString(reader.GetOrdinal("english_name")),
+            reader.IsDBNull(reader.GetOrdinal("email")) ? null : reader.GetString(reader.GetOrdinal("email")),
+            reader.IsDBNull(reader.GetOrdinal("nationality")) ? null : reader.GetString(reader.GetOrdinal("nationality")),
+            reader.IsDBNull(reader.GetOrdinal("enter_year")) ? null : reader.GetString(reader.GetOrdinal("enter_year")),
+            reader.IsDBNull(reader.GetOrdinal("address")) ? null : reader.GetString(reader.GetOrdinal("address")),
+            reader.IsDBNull(reader.GetOrdinal("house_name")) ? null : reader.GetString(reader.GetOrdinal("house_name")),
+            reader.IsDBNull(reader.GetOrdinal("stage")) ? null : reader.GetString(reader.GetOrdinal("stage")),
+            reader.IsDBNull(reader.GetOrdinal("id_number")) ? null : reader.GetString(reader.GetOrdinal("id_number")),
+            reader.IsDBNull(reader.GetOrdinal("image_url")) ? null : reader.GetString(reader.GetOrdinal("image_url")),
+            reader.GetBoolean(reader.GetOrdinal("is_male")),
+            reader.IsDBNull(reader.GetOrdinal("birthday")) ? null : reader.GetFieldValue<DateOnly>(reader.GetOrdinal("birthday")),
+            reader.IsDBNull(reader.GetOrdinal("section_name")) ? null : reader.GetString(reader.GetOrdinal("section_name")),
+            reader.IsDBNull(reader.GetOrdinal("class_name")) ? null : reader.GetString(reader.GetOrdinal("class_name")),
+            reader.IsDBNull(reader.GetOrdinal("first_name")) ? null : reader.GetString(reader.GetOrdinal("first_name")),
+            reader.IsDBNull(reader.GetOrdinal("last_name")) ? null : reader.GetString(reader.GetOrdinal("last_name"))
+        );
+
+    private static void AddStudentProfileParameters(NpgsqlCommand command, StudentProfile student)
+    {
+        //command.Parameters.Add(new NpgsqlParameter("StudentId", student.StudentId));
+        command.Parameters.Add(new NpgsqlParameter("StudentName", student.StudentName));
+        command.Parameters.Add(new NpgsqlParameter("FirstName", (object?)student.FirstName ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("LastName", (object?)student.LastName ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("StudentNum", (object?)student.StudentNum ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("DefaultName", (object?)student.DefaultName ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("EnglishName", (object?)student.EnglishName ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("Email", (object?)student.Email ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("Nationality", (object?)student.Nationality ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("EnterYear", (object?)student.EnterYear ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("Address", (object?)student.Address ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("HouseName", (object?)student.HouseName ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("Stage", (object?)student.Stage ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("IdNumber", (object?)student.IdNumber ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("ImageUrl", (object?)student.ImageUrl ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("IsMale", student.IsMale));
+        command.Parameters.Add(new NpgsqlParameter("Birthday", (object?)student.Birthday ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("SectionName", (object?)student.SectionName ?? DBNull.Value));
+        command.Parameters.Add(new NpgsqlParameter("ClassName", (object?)student.ClassName ?? DBNull.Value));
     }
 }

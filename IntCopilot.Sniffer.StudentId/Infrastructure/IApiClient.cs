@@ -10,5 +10,6 @@ namespace IntCopilot.Sniffer.StudentId.Infrastructure
     {
         Task<ApiResult<GetCurrentSchoolYearResponseModel, ErrorResponseModel>> GetCurrentSchoolYearAsync(CancellationToken cancellationToken = default);
         Task<ApiResult<GetStudentCurriculumResponseModel, ErrorResponseModel>> GetStudentCurriculumAsync(SharedStudentTimespanConfiguration config, CancellationToken cancellationToken = default);
+        //Task<ApiResult<GetStudentDetailResponseModel, ErrorResponseModel>> GetStudentDetailAsync(string studentId, CancellationToken cancellationToken = default);
     }
 }

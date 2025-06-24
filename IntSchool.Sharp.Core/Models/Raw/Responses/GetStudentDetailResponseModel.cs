@@ -190,16 +190,16 @@ namespace IntSchool.Sharp.Core.Models
         public string SchoolRollNote { get; set; }
 
         [JsonProperty("domicileProvince")]
-        [JsonConverter(typeof(GetStudentDetailResponseParseStringConverter))]
-        public long DomicileProvince { get; set; }
+        //[JsonConverter(typeof(GetStudentDetailResponseParseStringConverter))]
+        public string DomicileProvince { get; set; }
 
         [JsonProperty("domicileCity")]
-        [JsonConverter(typeof(GetStudentDetailResponseParseStringConverter))]
-        public long DomicileCity { get; set; }
+        //[JsonConverter(typeof(GetStudentDetailResponseParseStringConverter))]
+        public string DomicileCity { get; set; }
 
         [JsonProperty("domicileDistrict")]
-        [JsonConverter(typeof(GetStudentDetailResponseParseStringConverter))]
-        public long DomicileDistrict { get; set; }
+        //[JsonConverter(typeof(GetStudentDetailResponseParseStringConverter))]
+        public string DomicileDistrict { get; set; }
 
         [JsonProperty("domicileAddress")]
         public string DomicileAddress { get; set; }

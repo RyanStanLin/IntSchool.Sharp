@@ -1,6 +1,9 @@
+using System.Net.Sockets;
 using IntCopilot.DataAccess.Postgres.Configuration;
 using IntCopilot.DataAccess.Postgres.DataAccess;
 using IntCopilot.DataAccess.Postgres.Exceptions;
+using IntCopilot.Sniffer.StudentId.Extensions;
+using IntSchool.Sharp.Core.LifeCycle;
 using Microsoft.Extensions.Options;
 
 namespace IntCopilot.Sniffer.StudentId.Worker;
@@ -36,7 +39,6 @@ public class ResultPersistenceService : IHostedService
     public Task StartAsync(CancellationToken cancellationToken)
     {
         _logger.LogInformation("Result Persistence Service is waiting for sniffer completion.");
-        
         _subscription = _sniffer.StateChanges
             // 只关心 Completed 状态
             .Where(state => state.Status == SnifferStatus.Completed)
@@ -49,7 +51,7 @@ public class ResultPersistenceService : IHostedService
                     await PersistResultsAsync(state);
                 }
             );
-            
+        
         return Task.CompletedTask;
     }
 
@@ -67,8 +69,44 @@ public class ResultPersistenceService : IHostedService
             {
                 if (await studentRepo.GetStudentByIdAsync(student.Student.StudentId) == null)
                 {
-                    await studentRepo.AddStudentAsync(student.Student);
-                    _repoLogger.LogDebug($"id:{student.Student.StudentId}, name:{student.Student.StudentName} added.");
+                    await Task.Delay(1000);
+                    retry:
+                    try
+                    {
+                        var detailsRaw = await Api.Instance.GetStudentDetailAsync(student.Student.StudentId.ToString());
+                        if (detailsRaw.IsSuccess)
+                        {
+                            var resultModel = detailsRaw.SuccessResult;
+                            await studentRepo.AddStudentAsync(new StudentProfile(
+                                StudentId:resultModel.StudentId,
+                                StudentNum:resultModel.StudentNum.ToString(),
+                                StudentName:student.Student.StudentName,
+                                DefaultName:resultModel.Name,
+                                EnglishName:resultModel.EnName,
+                                FirstName:resultModel.FirstName,
+                                LastName:resultModel.LastName,
+                                Email:resultModel.Email,
+                                Nationality:resultModel.CountryEnName,
+                                EnterYear:resultModel.EnterYear.ToString(),
+                                Address:resultModel.Address,
+                                HouseName:resultModel.HouseName,
+                                Stage:resultModel.HouseGroupName,
+                                IdNumber:resultModel.IdNum,
+                                ImageUrl:resultModel.AvatarUrl.ToString(),
+                                IsMale: resultModel.Gender == "male" ? true : false,
+                                Birthday: resultModel.Birthday.ToDateOnlyFromUnixMilliseconds(),
+                                SectionName:resultModel.SectionName,
+                                ClassName:resultModel.ClassName
+                            ));
+                            _repoLogger.LogDebug($"id:{student.Student.StudentId}, name:{student.Student.StudentName} added.");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Error getting detail, retrying in 1s:");
+                        await Task.Delay(1000);
+                        goto retry;
+                    }
                 }
             }
             

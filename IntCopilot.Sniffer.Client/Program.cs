@@ -2,7 +2,7 @@ using IntCopilot.DataAccess.Postgres.Configuration;
 using IntCopilot.Sniffer.StudentId.DependencyInjection;
 using IntCopilot.Sniffer.StudentId.Worker;
 
-namespace IntCopilot.Sniffer.StudentId.Client;
+namespace IntCopilot.Sniffer.Client;
 
 public class Program
 {

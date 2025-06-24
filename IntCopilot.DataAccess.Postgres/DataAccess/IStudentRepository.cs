@@ -1,3 +1,4 @@
+using IntCopilot.DataAccess.Postgres.Configuration;
 using IntCopilot.DataAccess.Postgres.Models;
 using IntCopilot.Shared;
 
@@ -13,17 +14,17 @@ public interface IStudentRepository : IAsyncDisposable
     /// <summary>
     /// Adds a new student to the database asynchronously.
     /// </summary>
-    Task AddStudentAsync(Student student, CancellationToken cancellationToken = default);
+    Task AddStudentAsync(StudentProfile student, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Retrieves a student by their unique ID asynchronously.
     /// </summary>
-    Task<Student?> GetStudentByIdAsync(long studentId, CancellationToken cancellationToken = default);
+    Task<StudentProfile?> GetStudentByIdAsync(long studentId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Updates an existing student's information asynchronously.
     /// </summary>
-    Task<bool> UpdateStudentAsync(Student student, CancellationToken cancellationToken = default);
+    Task<bool> UpdateStudentAsync(StudentProfile student, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Deletes a student by their unique ID asynchronously.

@@ -1,3 +1,4 @@
+using IntCopilot.DataAccess.Postgres.Configuration;
 using IntCopilot.DataAccess.Postgres.Models;
 using IntCopilot.Shared;
 
@@ -8,4 +9,4 @@ namespace IntCopilot.DataAccess.Postgres.Models;
 /// </summary>
 /// <param name="Student">The matched student object.</param>
 /// <param name="Similarity">The similarity score (from 0.0 to 1.0) between the search term and the student's name.</param>
-public record FuzzySearchResult(Student Student, float Similarity);
+public record FuzzySearchResult(StudentProfile Student, float Similarity);

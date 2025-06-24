@@ -18,7 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntCopilot.Utilities", "Int
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Sniffer.StudentId", "IntCopilot.Sniffer.StudentId\IntCopilot.Sniffer.StudentId.csproj", "{ED1FCED6-17A7-4631-B3D9-8A0656E50329}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Sniffer.StudentId.Client", "IntCopilot.Sniffer.StudentId.Client\IntCopilot.Sniffer.StudentId.Client.csproj", "{B18F4FE7-4294-4332-8B30-8330A1FD69C7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Sniffer.Client", "IntCopilot.Sniffer.Client\IntCopilot.Sniffer.Client.csproj", "{B18F4FE7-4294-4332-8B30-8330A1FD69C7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntCopilot.DataAccess", "IntCopilot.DataAccess", "{1B3A8EB6-8FC5-4BC6-810B-D3205A1B9B25}"
 EndProject
@@ -27,6 +27,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.DataAccess.Postgres", "IntCopilot.DataAccess.Postgres\IntCopilot.DataAccess.Postgres.csproj", "{7DAC7FAC-525A-4318-A58A-CD747C83AB43}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Shared", "IntCopilot.Shared\IntCopilot.Shared.csproj", "{504A1443-DBD9-44D9-B314-032FD7D44229}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IntCopilot.Chat", "IntCopilot.Chat", "{82D4DF9A-A933-4925-ABFE-1AAFA9CAC3CE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Shell.Gemini", "IntCopilot.Shell.Gemini\IntCopilot.Shell.Gemini.csproj", "{05110A3A-CE4E-425B-9476-DD143063833F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntCopilot.Chat.Client", "IntCopilot.Chat.Client\IntCopilot.Chat.Client.csproj", "{27E51333-56E0-4D9C-BF4C-1E9DA01B445D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +72,14 @@ Global
 		{504A1443-DBD9-44D9-B314-032FD7D44229}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{504A1443-DBD9-44D9-B314-032FD7D44229}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{504A1443-DBD9-44D9-B314-032FD7D44229}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05110A3A-CE4E-425B-9476-DD143063833F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05110A3A-CE4E-425B-9476-DD143063833F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05110A3A-CE4E-425B-9476-DD143063833F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05110A3A-CE4E-425B-9476-DD143063833F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27E51333-56E0-4D9C-BF4C-1E9DA01B445D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27E51333-56E0-4D9C-BF4C-1E9DA01B445D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27E51333-56E0-4D9C-BF4C-1E9DA01B445D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27E51333-56E0-4D9C-BF4C-1E9DA01B445D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{AB1F0810-289E-4082-A101-0F1DC2F49D0A} = {3B6467C7-4B70-498C-B627-64E1C5D419C4}
@@ -79,5 +93,8 @@ Global
 		{F0FD8816-6190-446F-B4C9-5455DF05D800} = {13DEF9A2-410F-4DAA-86C2-AED8C7180974}
 		{7DAC7FAC-525A-4318-A58A-CD747C83AB43} = {1B3A8EB6-8FC5-4BC6-810B-D3205A1B9B25}
 		{504A1443-DBD9-44D9-B314-032FD7D44229} = {3547A8D5-1161-4D80-B759-428D9469C494}
+		{82D4DF9A-A933-4925-ABFE-1AAFA9CAC3CE} = {0FE1BEA5-B9C8-411A-AD4E-D90D9784D747}
+		{05110A3A-CE4E-425B-9476-DD143063833F} = {82D4DF9A-A933-4925-ABFE-1AAFA9CAC3CE}
+		{27E51333-56E0-4D9C-BF4C-1E9DA01B445D} = {82D4DF9A-A933-4925-ABFE-1AAFA9CAC3CE}
 	EndGlobalSection
 EndGlobal
