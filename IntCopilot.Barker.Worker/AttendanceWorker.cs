@@ -106,6 +106,7 @@ namespace IntCopilot.Barker.Worker
                 SchoolYearId = profile.SchoolYearId
             };
             
+            //TODOshould be delete when its in production state
             Api.Instance.XToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJ3ZWJUb2tlbiIsInNjaG9vbElkcyI6WzhdLCJpc3MiOiJkaXBvbnQtbmoiLCJleHAiOjE3NDk5OTMyMzYsInVzZXJOYW1lIjoi5p6X55-l6L-cIiwiaWF0IjoxNzQ3NDAxMjM2LCJ1c2VySWQiOjE1NDM1LCJqdGkiOiI0NWU0NDZjYy0yYTg3LTRkYWEtOWQyZS03ODEyNmUwOWJhOTIifQ.iCuNIx4A-BDaNXmnEmcn63vIye4BeDtPfTTO31H3H-8";
             
             var response = Api.Instance.GetAttendance(config);
