@@ -14,13 +14,11 @@ using IntCopilot.Sniffer.StudentId.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-// 假设API模型定义
 using IntSchool.Sharp.Core.Models;
 using IntSchool.Sharp.Core.RequestConfigs;
 
 namespace IntCopilot.Sniffer.StudentId.Core
 {
-    // 内部使用的任务记录
     internal record SnifferWorkItem(DiscoveredStudent Student, int RetryCount = 0);
 
     internal sealed class StudentIdSniffer : IStudentIdSniffer
@@ -30,13 +28,11 @@ namespace IntCopilot.Sniffer.StudentId.Core
         private readonly RateLimiter _rateLimiter;
         private readonly SnifferConfiguration _config;
         
-        // 并发和状态
         private readonly AsyncLock _lock = new();
         private readonly BehaviorSubject<SnifferState> _stateSubject;
         private CancellationTokenSource? _cts;
         private Task _processingTask = Task.CompletedTask;
         
-        // 内部数据
         private readonly ConcurrentDictionary<long, DiscoveredStudent> _discoveredStudents = new();
         private readonly ConcurrentQueue<SnifferWorkItem> _workQueue = new();
 
@@ -270,7 +266,6 @@ namespace IntCopilot.Sniffer.StudentId.Core
 
             if(wasRunning)
             {
-                // Wait for the task to finish outside the lock
                 await _processingTask;
             }
         }

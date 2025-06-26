@@ -6,7 +6,6 @@ namespace IntCopilot.Sniffer.StudentId.Core
 {
     public interface IStudentIdSniffer : IAsyncDisposable
     {
-        // 启动改为异步
         Task StartAsync();
         
         Task PauseAsync();

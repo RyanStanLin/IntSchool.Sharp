@@ -17,9 +17,8 @@ public class ChatApplication : IHostedService
 {
     private readonly ILogger<ChatApplication> _logger;
     private readonly GenerativeModel _model;
-    private readonly IIntSchoolFunctions _shell; // ✅ 字段类型也是接口
+    private readonly IIntSchoolFunctions _shell;
 
-    // ✅ 构造函数注入的是 ICopilotShell 接口
     public ChatApplication(
         ILogger<ChatApplication> logger,
         GenerativeModel model,
