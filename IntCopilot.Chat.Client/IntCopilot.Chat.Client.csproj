@@ -18,10 +18,14 @@
       <PackageReference Include="Google_GenerativeAI" Version="2.7.0" />
       <PackageReference Include="Google_GenerativeAI.Tools" Version="2.7.0" />
       <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.6" />
       <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
       <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.6" />
       <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.6" />
+      <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.6" />
+      <PackageReference Include="Spectre.Console" Version="0.50.0" />
     </ItemGroup>
 
     <ItemGroup>

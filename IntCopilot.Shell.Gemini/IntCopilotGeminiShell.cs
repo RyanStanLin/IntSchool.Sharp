@@ -12,66 +12,66 @@ namespace IntCopilot.Shell.Gemini;
 
 public class IntCopilotGeminiShell(IStudentRepository studentRepository) : IIntSchoolFunctions
 {
-    public async Task<GetStudentDetailResponseModel> GetStudentDetailAsync(string studentId,
+    public async Task<GetStudentDetailResponseModel> GetStudentDetailAsync(long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetStudentDetailAsync(studentId);
+        var result = await Api.Instance.GetStudentDetailAsync(studentId.ToString());
         return result.SuccessResult ?? new GetStudentDetailResponseModel();
     }
 
-    public async Task<GetStudentCurriculumResponseModel> GetStudentCurriculumAsync(string schoolYearId, string studentId, long startTimeStamp, long endTimeStamp,
+    public async Task<GetStudentCurriculumResponseModel> GetStudentCurriculumAsync(string schoolYearId, long studentId, long startTimeStamp, long endTimeStamp,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetStudentCurriculumAsync(new SharedStudentTimespanConfiguration(schoolYearId, studentId, startTimeStamp.ToDateTimeFromUnixMilliseconds(), endTimeStamp.ToDateTimeFromUnixMilliseconds()));
+        var result = await Api.Instance.GetStudentCurriculumAsync(new SharedStudentTimespanConfiguration(schoolYearId, studentId.ToString(), startTimeStamp.ToDateTimeFromUnixMilliseconds(), endTimeStamp.ToDateTimeFromUnixMilliseconds()));
         return result.SuccessResult ?? new GetStudentCurriculumResponseModel();
     }
 
-    public async Task<List<GetReportListResponseModel>> GetReportListAsync(string schoolYearId, string studentId,
+    public async Task<List<GetReportListResponseModel>> GetReportListAsync(string schoolYearId, long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetReportListAsync(schoolYearId, studentId);
+        var result = await Api.Instance.GetReportListAsync(schoolYearId, studentId.ToString());
         return result.SuccessResult ?? new List<GetReportListResponseModel>();
     }
 
-    public async Task<GetReportDetailResponseModel> GetReportDetailAsync(string gradePeriodId, string studentId,
+    public async Task<GetReportDetailResponseModel> GetReportDetailAsync(string gradePeriodId, long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetReportDetailAsync(gradePeriodId, studentId);
+        var result = await Api.Instance.GetReportDetailAsync(gradePeriodId, studentId.ToString());
         return result.SuccessResult ?? new GetReportDetailResponseModel();
     }
 
-    public async Task<List<GetParentsResponseModel>> GetParentsAsync(string studentId,
+    public async Task<List<GetParentsResponseModel>> GetParentsAsync(long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetParentsAsync(studentId);
+        var result = await Api.Instance.GetParentsAsync(studentId.ToString());
         return result.SuccessResult ?? new List<GetParentsResponseModel>();
     }
 
-    public async Task<GetMarkListResponseModel> GetMarkListAsync(string courseId, string schoolYearId, string studentId,
+    public async Task<GetMarkListResponseModel> GetMarkListAsync(string courseId, string schoolYearId, long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetMarkListAsync(courseId,schoolYearId,studentId);
+        var result = await Api.Instance.GetMarkListAsync(courseId,schoolYearId,studentId.ToString());
         return result.SuccessResult ?? new GetMarkListResponseModel();
     }
 
-    public async Task<GetMarkDetailResponseModel> GetMarkDetailAsync(string taskStudentId, string studentId,
+    public async Task<GetMarkDetailResponseModel> GetMarkDetailAsync(string taskStudentId, long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetMarkDetailAsync(taskStudentId,studentId);
+        var result = await Api.Instance.GetMarkDetailAsync(taskStudentId,studentId.ToString());
         return result.SuccessResult ?? new GetMarkDetailResponseModel();
     }
 
-    public async Task<GetLeavesListResponseModel> GetLeavesListAsync(string pageSize, string pageCurrent, string studentId,
+    public async Task<GetLeavesListResponseModel> GetLeavesListAsync(string pageSize, string pageCurrent, long studentId,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetLeavesListAsync(studentId,new GetPageControlConfiguration(pageSize,pageCurrent));
+        var result = await Api.Instance.GetLeavesListAsync(studentId.ToString(),new GetPageControlConfiguration(pageSize,pageCurrent));
         return result.SuccessResult ?? new GetLeavesListResponseModel();
     }
 
-    public async Task<AttendanceDtoModel> GetAttendance(string schoolYearId, string studentId, long startTimeStamp, long endTimeStamp,
+    public async Task<AttendanceDtoModel> GetAttendance(string schoolYearId, long studentId, long startTimeStamp, long endTimeStamp,
         CancellationToken cancellationToken = default)
     {
-        var result = await Api.Instance.GetAttendanceAsync(new SharedStudentTimespanConfiguration(schoolYearId, studentId, startTimeStamp.ToDateTimeFromUnixMilliseconds(), endTimeStamp.ToDateTimeFromUnixMilliseconds()));
+        var result = await Api.Instance.GetAttendanceAsync(new SharedStudentTimespanConfiguration(schoolYearId, studentId.ToString(), startTimeStamp.ToDateTimeFromUnixMilliseconds(), endTimeStamp.ToDateTimeFromUnixMilliseconds()));
         return result.SuccessResult.ToAttendanceDtoModel() ?? new AttendanceDtoModel();
     }
 
